@@ -1,0 +1,325 @@
+<!-- hallbooking_app/templates/hallbooking_app/book_hall.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <title>Book Hall</title>
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'home' %}">Hall Booking</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'check_availability' %}">Check Availability</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'book_hall' %}">Book Hall</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'add_hall' %}">Add Hall</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'list_halls' %}">Available Halls</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="form-container">
+    <h2 class="text-center">Book a Hall</h2>
+    <form method="POST" id="bookingForm" action="{% url 'book_hall' %}">
+      {% csrf_token %}
+      <div id="step1">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input class="form-control" type="email" id="email" name="email" required />
+        </div>
+        <button type="button" class="btn btn-warning btn-block" id="sendOTPBtn">
+          Send OTP
+        </button>
+        <br>
+        <div class="form-group">
+          <label for="otp">Enter OTP:</label>
+          <input class="form-control" type="text" id="otp" name="otp" required disabled />
+
+          <button class="btn btn-warning btn-block" type="button" id="verifyOTPBtn" disabled>
+            Verify OTP
+          </button>
+        </div>
+      </div>
+      <div id="step2" style="display: none">
+        <div class="form-group">
+          <label for="user_contact_name">Name</label>
+          <input type="text" class="form-control" id="user_contact_name" name="name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="user_contact_phone">Phone Number</label>
+          <input type="tel" class="form-control" id="user_contact_phone" name="number" required />
+        </div>
+        <div class="form-group">
+          <label for="user_contact_address">Email</label>
+          <input type="email" class="form-control" id="emailStep2" name="emailStep2" required disabled />
+        </div>
+        <div class="form-group">
+          <label for="user_contact_address">Address</label>
+          <textarea class="form-control" id="event_address" name="address" rows="3"></textarea>
+        </div>
+        <br />
+      </div>
+      <div id="step3" style="display: none">
+        <div class="form-group">
+          <label for="hall">Select Hall</label>
+          <select class="form-control" id="hall" name="hall" required>
+            {% for hall in halls %}
+            <option value="{{ hall.id }}">{{ hall.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="start_time">Start Time</label>
+          <input type="datetime-local" class="form-control" id="start_time" name="start_time" required />
+        </div>
+        <div class="form-group">
+          <label for="end_time">End Time</label>
+          <input type="datetime-local" class="form-control" id="end_time" name="end_time" required />
+        </div>
+        <div class="form-group">
+          <label for="event_type">Event Type</label>
+          <select class="form-control" id="event_type" name="event_type" required>
+            <option value="marriage">Marriage</option>
+            <option value="meeting">Meeting</option>
+            <option value="baptism">Baptism</option>
+            <option value="others">Others</option>
+          </select>
+        </div>
+
+        <!-- Show this only if 'others' is selected -->
+        <div id="other_event_type" style="display: none">
+          <label for="specify">Specify Event Type:</label>
+          <input type="text" id="specify" name="specify" />
+        </div>
+
+        <div class="form-group">
+          <label for="event_description">Event Description:</label>
+          <textarea class="form-control" id="event_description" name="event_description" rows="3"></textarea>
+        </div>
+        <br />
+      </div>
+      <!-- <div class="form-group">
+            <label for="user_contact_name">Name</label>
+            <input type="text" class="form-control" id="user_contact_name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="user_contact_phone">Phone Number</label>
+            <input type="tel" class="form-control" id="user_contact_phone" name="number" required>
+        </div>
+        <div class="form-group">
+            <label for="user_contact_address">Email</label>
+            <input type="email" class="form-control" id="user_contact_email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="user_contact_address">Address</label>
+            <textarea class="form-control" id="event_address" name="address" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="hall">Select Hall</label>
+            <select class="form-control" id="hall" name="hall" required>
+                {% for hall in halls %}
+                    <option value="{{ hall.id }}">{{ hall.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="start_time">Start Time</label>
+            <input type="datetime-local" class="form-control" id="start_time" name="start_time" required>
+        </div>
+        <div class="form-group">
+            <label for="end_time">End Time</label>
+            <input type="datetime-local" class="form-control" id="end_time" name="end_time" required>
+        </div>
+        <div class="form-group">
+            <label for="event_type">Event Type</label>
+            <select class="form-control" id="event_type" name="event_type" required>
+                <option value="marriage">Marriage</option>
+                <option value="meeting">Meeting</option>
+                <option value="baptism">Baptism</option>
+                <option value="others">Others</option>
+            </select>
+        </div>
+        <div class="form-group" id="other-details" style="display: none;">
+            <label for="event_details">Specify Details:</label>
+            <input type="text" class="form-control" id="event_details" name="event_details">
+        </div>
+        <div class="form-group">
+            <label for="event_description">Event Description:</label>
+            <textarea class="form-control" id="event_description" name="event_description" rows="3"></textarea>
+        </div> -->
+      <button type="button" class="btn btn-success btn-block" id="nextBtn" style="display: block">
+        Next
+      </button>
+      <button type="button" class="btn btn-secondary btn-block" id="prevBtn" style="display: none">
+        Previous
+      </button>
+      <button type="submit" class="btn btn-primary btn-block" style="display: none" id="submitBookingBtn">
+        Book Hall
+      </button>
+    </form>
+  </div>
+
+  <!-- <script>
+    document.getElementById('event_type').addEventListener('change', function() {
+        var otherDetails = document.getElementById('other-details');
+        otherDetails.style.display = this.value === 'others' ? 'block' : 'none';
+    });
+</script> -->
+  <!-- <script>
+    // JavaScript to handle OTP sending, verification and form steps
+    document.getElementById("sendOTPBtn").addEventListener("click", function() {
+        var email = document.getElementById("email").value;
+        // Call backend to send OTP to the entered email
+        // On success, enable OTP field and verify button
+        document.getElementById("otp").disabled = false;
+        document.getElementById("verifyOTPBtn").disabled = false;
+    });
+
+    document.getElementById("verifyOTPBtn").addEventListener("click", function() {
+        var otp = document.getElementById("otp").value;
+        // Call backend to verify OTP
+        // If OTP is correct, show the next part of the form
+        document.getElementById("step2").style.display = "block";
+        document.getElementById("submitBookingBtn").style.display = "block";
+    });
+
+    document.getElementById("event_type").addEventListener("change", function() {
+        if (this.value === "others") {
+            document.getElementById("other_event_type").style.display = "block";
+        } else {
+            document.getElementById("other_event_type").style.display = "none";
+        }
+    });
+</script> -->
+
+  <script>
+    let currentStep = 1;
+
+    document.getElementById("nextBtn").addEventListener("click", function () {
+      if (currentStep === 1) {
+        // Move to Step 2
+        document.getElementById("step1").style.display = "none";
+        document.getElementById("step2").style.display = "block";
+        document.getElementById("prevBtn").style.display = "none";
+        document.getElementById("nextBtn").style.display = "block";
+      } else if (currentStep === 2) {
+        // Move to Step 3
+        document.getElementById("step2").style.display = "none";
+        document.getElementById("step3").style.display = "block";
+        document.getElementById("prevBtn").style.display = "block";
+        document.getElementById("nextBtn").style.display = "none";
+        document.getElementById("submitBookingBtn").style.display = "block";
+      }
+      currentStep++;
+    });
+
+    document.getElementById("prevBtn").addEventListener("click", function () {
+      if (currentStep === 2) {
+        // Move back to Step 1
+        document.getElementById("step2").style.display = "none";
+        document.getElementById("step1").style.display = "block";
+        document.getElementById("prevBtn").style.display = "none";
+        document.getElementById("nextBtn").style.display = "block";
+        document.getElementById("submitBookingBtn").style.display = "none";
+      } else if (currentStep === 3) {
+        // Move back to Step 2
+        document.getElementById("step3").style.display = "none";
+        document.getElementById("step2").style.display = "block";
+        document.getElementById("prevBtn").style.display = "block";
+        document.getElementById("nextBtn").style.display = "block";
+        document.getElementById("submitBookingBtn").style.display = "none";
+      }
+      currentStep--;
+    });
+
+    document
+      .getElementById("event_type")
+      .addEventListener("change", function () {
+        if (this.value === "others") {
+          document.getElementById("other_event_type").style.display = "block";
+        } else {
+          document.getElementById("other_event_type").style.display = "none";
+        }
+      });
+  </script>
+  <script>
+    document
+      .getElementById("sendOTPBtn")
+      .addEventListener("click", function () {
+        var email = document.getElementById("email").value;
+        fetch("{% url 'send_otp' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify({ email: email }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              document.getElementById("otp").disabled = false;
+              document.getElementById("verifyOTPBtn").disabled = false;
+              alert("OTP has been sent to your email.");
+            } else {
+              alert("Error sending OTP. Please try again.");
+            }
+          });
+      });
+
+    document
+      .getElementById("verifyOTPBtn")
+      .addEventListener("click", function () {
+        var otp = document.getElementById("otp").value;
+        fetch("{% url 'verify_otp' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify({ otp: otp }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              document.getElementById("step1").style.display = "none";
+              document.getElementById("step2").style.display = "block";
+              document.getElementById("emailStep2").value =
+                document.getElementById("email").value;
+            } else {
+              alert("Invalid OTP. Please try again.");
+            }
+          });
+      });
+  </script>
+</body>
+
+</html>

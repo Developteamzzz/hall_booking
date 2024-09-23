@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Calendar</title>
+    <link href='https://unpkg.com/@fullcalendar/core@5.0.1/main.min.css' rel='stylesheet' />
+    <link href='https://unpkg.com/@fullcalendar/daygrid@5.0.1/main.min.css' rel='stylesheet' />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Booking Calendar</h2>
+<div id='calendar'></div>
+
+<script src='https://unpkg.com/@fullcalendar/core@5.0.1/main.min.js'></script>
+<script src='https://unpkg.com/@fullcalendar/daygrid@5.0.1/main.min.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: ['dayGrid'],
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: async function(fetchInfo, successCallback, failureCallback) {
+                const response = await fetch('/fetch-bookings/');
+                const bookings = await response.json();
+
+                const events = bookings.map(booking => {
+                    return {
+                        title: booking.title,
+                        start: booking.date,
+                        color: booking.status === 'booked' ? 'red' :
+                               booking.status === 'available' ? 'green' :
+                               booking.status === 'unavailable' ? 'grey' :
+                               'yellow',
+                    };
+                });
+
+                successCallback(events);
+            },
+            dateClick: function(info) {
+                alert('Clicked on: ' + info.dateStr);
+            },
+        });
+
+        calendar.render();
+    });
+</script>
+
+</body>
+</html>

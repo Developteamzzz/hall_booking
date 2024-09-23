@@ -1,0 +1,409 @@
+<!-- /*
+* Template Name: Tour
+* Template Author: Untree.co
+* Tempalte URI: https://untree.co/
+* License: https://creativecommons.org/licenses/by/3.0/
+*/ -->
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Untree.co">
+	<link rel="shortcut icon" href="favicon.png">
+
+	<meta name="description" content="" />
+	<meta name="keywords" content="bootstrap, bootstrap4" />
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Serif+Pro:wght@400;700&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}">
+	<link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
+	<link rel="stylesheet" href="{% static 'fonts/flaticon/font/flaticon.css' %}">
+	<link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+	<link rel="stylesheet" href="{% static 'css/aos.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+	<title>Tour Free Bootstrap Template for Travel Agency by Untree.co</title>
+</head>
+
+<body>
+
+
+	<div class="site-mobile-menu site-navbar-target">
+		<div class="site-mobile-menu-header">
+			<div class="site-mobile-menu-close">
+				<span class="icofont-close js-menu-toggle"></span>
+			</div>
+		</div>
+		<div class="site-mobile-menu-body"></div>
+	</div>
+
+	<nav class="site-nav">
+		<div class="container">
+			<div class="site-navigation">
+				<a href="#" class="logo m-0"  >Rotary Club<span class="text-primary">.</span></a>
+
+				<ul class="js-clone-nav d-none d-lg-inline-block text-left site-menu float-right">
+					<li class="active"><a href="#">Home</a></li>
+					<li><a href="{% url 'fetch_bookings' %}">Check Availability</a></li>
+					<li><a href="{% url 'new' %}">Book a Hall Now</a></li>
+					<li><a href="{% url 'about' %}">About</a></li>
+				</ul>
+
+				<a href="#" class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light" data-toggle="collapse" data-target="#main-navbar">
+					<span></span>
+				</a>
+
+			</div>
+		</div>
+	</nav>
+
+
+	<div class="hero">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="row mb-5 justify-content-center">
+					<div class="col-lg-8 text-center">
+						<br><Br><br>
+						<h2 class="section-title text-center mb-3" style="color: white;">Our Services</h2>
+						<p style="color: white; font-size: larger ;">Booking a venue for your special occasion has never been easier with us.&nbsp;&nbsp; We've simplified the entire process, letting you find, customize, and reserve the perfect hall in just a few clicks. Say goodbye to the hassle and focus on what really matters—making your event unforgettable!</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="untree_co-section">
+		<div class="container">
+			
+			<div class="row align-items-stretch">
+				<div class="col-lg-4 order-lg-1">
+					<!-- <div class="h-100"><div class="frame h-100"><div class="feature-img-bg h-100" style="background-image: url('{% static 'images/hero-slider-1.jpg' %}');"></div></div></div> -->
+				</div>
+
+				<div class="col-6 col-sm-6 col-lg-4 feature-1-wrap d-md-flex flex-md-column order-lg-1" >
+
+					<div class="feature-1 d-md-flex">
+						<div class="align-self-center">
+							<span class="flaticon-house display-4 text-primary"></span>
+							<h3>Great Halls</h3>
+							
+						</div>
+					</div>
+
+					<div class="feature-1 ">
+						<div class="align-self-center">
+							<span class="flaticon-restaurant display-4 text-primary"></span>
+							<h3>Attractive Rates</h3>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="col-6 col-sm-6 col-lg-4 feature-1-wrap d-md-flex flex-md-column order-lg-3" >
+					<div class="feature-1 d-md-flex">
+						<div class="align-self-center">
+							<span class="flaticon-mail display-4 text-primary"></span>
+							<h3>Simple Process</h3>
+						</div>
+					</div>
+
+					<div class="feature-1 d-md-flex">
+						<div class="align-self-center">
+							<span class="flaticon-phone-call display-4 text-primary"></span>
+							<h3>24/7 Support</h3>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+	<!-- <div class="untree_co-section">
+		<div class="container">
+			<div class="row text-center justify-content-center mb-5">
+				<div class="col-lg-7"><h2 class="section-title text-center">Popular Destination</h2></div>
+			</div>
+
+			<div class="owl-carousel owl-3-slider">
+
+				<div class="item">
+					<a class="media-thumb" href="{% static 'images/hero-slider-1.jpg' %}" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Pragser Wildsee</h3>
+							<span class="location">Italy</span>
+						</div>
+						<img src="{% static 'images/hero-slider-1.jpg' %}" alt="Image" class="img-fluid">
+					</a> 
+				</div>
+
+				<div class="item">
+					<a class="media-thumb" href="{% static 'images/hero-slider-2.jpg' %}" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Oia</h3>
+							<span class="location">Greece</span>
+						</div>
+						<img src="{% static 'images/hero-slider-2.jpg' %}" alt="Image" class="img-fluid">
+					</a> 
+				</div>
+
+				<div class="item">
+					<a class="media-thumb" href="{% static 'images/hero-slider-3.jpg' %}" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Perhentian Islands</h3>
+							<span class="location">Malaysia</span>
+						</div>
+						<img src="{% static 'images/hero-slider-3.jpg' %}" alt="Image" class="img-fluid">
+					</a> 
+				</div>
+
+
+				<div class="item">
+					<a class="media-thumb" href="{% static 'images/hero-slider-4.jpg' %}" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Rialto Bridge</h3>
+							<span class="location">Italy</span>
+						</div>
+						<img src="{% static 'images/hero-slider-4.jpg' %}" alt="Image" class="img-fluid">
+					</a> 
+				</div>
+
+				<div class="item">
+					<a class="media-thumb" href="{% static 'images/hero-slider-5.jpg' %}" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>San Francisco, United States</h3>
+							<span class="location">United States</span>
+						</div>
+						<img src="{% static 'images/hero-slider-5.jpg' %}" alt="Image" class="img-fluid">
+					</a> 
+				</div>
+
+				<div class="item">
+					<a class="media-thumb" href="{% static 'images/hero-slider-1.jpg' %}" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Lake Thun</h3>
+							<span class="location">Switzerland</span>
+						</div>
+						<img src="{% static 'images/hero-slider-2.jpg' %}" alt="Image" class="img-fluid">
+					</a> 
+				</div>
+
+			</div>
+
+		</div>
+	</div> -->
+
+	<div class="untree_co-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+					<div class="media-1">
+						<a href="#" class="d-block mb-3"><img src="data:image/jpeg;base64,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" alt="Image" class="img-fluid"></a>
+						<span class="d-flex align-items-center loc mb-2">
+							<span class="icon-room mr-3"></span>
+							<span><a href="https://maps.app.goo.gl/JcD4HZZK7T7SuPKE8">S.N Puram</a></span></span>
+						</span>
+						<div class="d-flex align-items-center">
+							<div>
+								<h3><a href="#">Hall 1</a></h3>
+								<div class="price ml-auto">
+									<span>Capacity : 200-500</span><br>
+									<span><a href="{% url 'new' %}"><button id="book" class="btn btn-warning">Book</button></a></span>
+								</div>
+							</div>
+							
+						</div>
+						
+					</div>
+				</div>
+				<div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+					<div class="media-1">
+						<a href="#" class="d-block mb-3"><img src="https://www.princehotels.com/shinyokohama/wp-content/uploads/sites/8/2019/06/Z7T788%E5%B0%8F.jpg" alt="Image" class="img-fluid"></a>
+						<span class="d-flex align-items-center loc mb-2">
+							<span class="icon-room mr-3"></span>
+							<span><a href="https://maps.app.goo.gl/JcD4HZZK7T7SuPKE8">Kodungalloor</a></span></span>
+						</span>
+						<div class="d-flex align-items-center">
+							<div>
+								<h3><a href="#">Hall 2</a></h3>
+								<div class="price ml-auto">
+									<span>Capacity : 500-700</span><br>
+									<span><a href="{% url 'new' %}"><button id="book" class="btn btn-warning">Book</button></a></span>
+								</div>
+							</div>
+							
+						</div>
+						
+					</div>
+				</div>
+				<div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+					<div class="media-1">
+						<a href="#" class="d-block mb-3"><img src="https://images.venuebookingz.com/27305-1665469241-wm-pp-residency-hall-old-mahabalipuram-road-chennai-3.jpg" alt="Image" class="img-fluid"></a>
+						<span class="d-flex align-items-center loc mb-2">
+							<span class="icon-room mr-3"></span>
+							<span><a href="https://maps.app.goo.gl/JcD4HZZK7T7SuPKE8">Perumbavoor</a></span>
+						</span>
+						<div class="d-flex align-items-center">
+							<div>
+								<h3><a href="#">Hall 3</a></h3>
+								<div class="price ml-auto">
+									<span>Capacity : 800-1000 </span><br>
+									<span><a href="{% url 'new' %}"><button id="book" class="btn btn-warning">Book</button></a></span>
+								</div>
+							</div>
+							
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="py-5 cta-section">
+		<div class="container">
+			<div class="row text-center">
+				<div class="col-md-12">
+					<h2 class="mb-2 text-white">Lets you Explore the Best. Contact Us Now</h2>
+					<p class="mb-4 lead text-white text-white-opacity">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, fugit?</p>
+					<p class="mb-0"><a href="#" class="btn btn-outline-white text-white btn-md font-weight-bold">Get in touch</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="site-footer">
+		<div class="inner first">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6 col-lg-4">
+						<div class="widget">
+							<h3 class="heading">About Tour</h3>
+							<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+						</div>
+						<div class="widget">
+							<ul class="list-unstyled social">
+								<li><a href="#"><span class="icon-twitter"></span></a></li>
+								<li><a href="#"><span class="icon-instagram"></span></a></li>
+								<li><a href="#"><span class="icon-facebook"></span></a></li>
+								<li><a href="#"><span class="icon-linkedin"></span></a></li>
+								<li><a href="#"><span class="icon-dribbble"></span></a></li>
+								<li><a href="#"><span class="icon-pinterest"></span></a></li>
+								<li><a href="#"><span class="icon-apple"></span></a></li>
+								<li><a href="#"><span class="icon-google"></span></a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-2 pl-lg-5">
+						<div class="widget">
+							<h3 class="heading">Pages</h3>
+							<ul class="links list-unstyled">
+								<li><a href="#">Blog</a></li>
+								<li><a href="#">About</a></li>
+								<li><a href="#">Contact</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-2">
+						<div class="widget">
+							<h3 class="heading">Resources</h3>
+							<ul class="links list-unstyled">
+								<li><a href="#">Blog</a></li>
+								<li><a href="#">About</a></li>
+								<li><a href="#">Contact</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-4">
+						<div class="widget">
+							<h3 class="heading">Contact</h3>
+							<ul class="list-unstyled quick-info links">
+								<li class="email"><a href="#">mail@example.com</a></li>
+								<li class="phone"><a href="#">+1 222 212 3819</a></li>
+								<li class="address"><a href="#">43 Raymouth Rd. Baltemoer, London 3910</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<div class="inner dark">
+			<div class="container">
+				<div class="row text-center">
+					<div class="col-md-8 mb-3 mb-md-0 mx-auto">
+						<p>Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Designed by Tony </a>
+						</p>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="overlayer"></div>
+	<div class="loader">
+		<div class="spinner-border" role="status">
+			<span class="sr-only">Loading...</span>
+		</div>
+	</div>
+
+	<script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+	<script src="{% static 'js/popper.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+	<script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
+	<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+	<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+	<script src="{% static 'js/aos.js' %}"></script>
+	<script src="{% static 'js/moment.min.js' %}"></script>
+	<script src="{% static 'js/daterangepicker.js' %}"></script>
+
+	<script src="{% static 'js/typed.js' %}"></script>
+	<script>
+		$(function() {
+			var slides = $('.slides'),
+			images = slides.find('img');
+
+			images.each(function(i) {
+				$(this).attr('data-id', i + 1);
+			})
+
+			var typed = new Typed('.typed-words', {
+				strings: ["San Francisco."," Paris."," New Zealand.", " Maui.", " London."],
+				typeSpeed: 80,
+				backSpeed: 80,
+				backDelay: 4000,
+				startDelay: 1000,
+				loop: true,
+				showCursor: true,
+				preStringTyped: (arrayPos, self) => {
+					arrayPos++;
+					console.log(arrayPos);
+					$('.slides img').removeClass('active');
+					$('.slides img[data-id="'+arrayPos+'"]').addClass('active');
+				}
+
+			});
+		})
+	</script>
+
+	<script src="{% static 'js/custom.js' %}"></script>
+
+</body>
+
+</html>

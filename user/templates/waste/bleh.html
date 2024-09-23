@@ -1,0 +1,533 @@
+<!-- /*
+* Template Name: Tour
+* Template Author: Untree.co
+* Tempalte URI: https://untree.co/
+* License: https://creativecommons.org/licenses/by/3.0/
+*/ -->
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Untree.co">
+    <link rel="shortcut icon" href="favicon.png">
+
+    <meta name="description" content="" />
+    <meta name="keywords" content="bootstrap, bootstrap4" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Serif+Pro:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/flaticon/font/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <title>Tour Free Bootstrap Template for Travel Agency by Untree.co</title>
+</head>
+<style>
+    #regForm {
+        background-color: #ffffff;
+        margin: 100px auto;
+        padding: 40px;
+        width: 70%;
+        min-width: 300px;
+    }
+
+    /* Style the input fields */
+    input[type="text"],
+    input[type=date],
+    select {
+        padding: 10px;
+        width: 100%;
+        font-size: 17px;
+        font-family: Raleway;
+        border: 1px solid #aaaaaa;
+    }
+
+    /* Mark input boxes that gets an error on validation: */
+    input.invalid {
+        background-color: #ffdddd;
+    }
+
+    /* Hide all steps by default: */
+    .tab {
+        display: none;
+    }
+
+    /* Make circles that indicate the steps of the form: */
+    .step {
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbbbbb;
+        border: none;
+        border-radius: 50%;
+        display: inline-block;
+        opacity: 0.5;
+    }
+
+    /* Mark the active step: */
+    .step.active {
+        opacity: 1;
+    }
+
+    /* Mark the steps that are finished and valid: */
+    .step.finish {
+        background-color: #04AA6D;
+    }
+</style>
+
+<body>
+
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close">
+                <span class="icofont-close js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div>
+
+    <nav class="site-nav">
+        <div class="container">
+            <div class="site-navigation">
+                <a href="{% url 'index' %}" class="logo m-0">Rotary Club<span class="text-primary">.</span></a>
+
+                <ul class="js-clone-nav d-none d-lg-inline-block text-left site-menu float-right">
+                    <li class="active"><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="#">Check Availability</a></li>
+                    <li><a href="{% url 'new' %}">Book a Hall Now</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                </ul>
+
+                <a href="#"
+                    class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
+                    data-toggle="collapse" data-target="#main-navbar">
+                    <span></span>
+                </a>
+
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="hero">
+        <div class="container">
+            <div class="container mt-5">
+                <h2 class="text-center">Add Event</h2>
+                <form id="regForm" method="post" action="{% url 'new' %}">
+                    {% csrf_token %}
+                    <div class="form-group tab">
+                        <h4>Email Verification: </h4> <br>
+                        <label for="email">Email:</label>
+                        <input type="text" class="form-control" id="email" name="email"
+                            placeholder="Enter your email id" oninput="this.className = ''"> <br>
+                        <button id="getotp" class="btn btn-primary">Get OTP</button>
+                        <br><br>
+
+                        <label for="otp">OTP:</label>
+                        <input type="text" class="form-control" id="otp" name="otp"
+                            placeholder="Enter the OTP received on your email id" oninput="this.className = ''"><br>
+                        <button id="verifyotp" class="btn btn-primary">Verify OTP</button>
+                        <p id="message"></p>
+                    </div>
+                    <div class="form-group tab">
+                        <h4>Contact Details: </h4> <br>
+                        <label for="organizer">Organizer Name :</label>
+                        <input type="text" class="form-control" id="organizer" name="organizer"
+                            placeholder="Enter event organizer" oninput="this.className = ''">
+                        <label for="email">Email :</label>
+                        <input type="text" class="form-control" id="email" name="email" placeholder="Enter email"
+                            oninput="this.className = ''">
+                        <label for="contact">Contact Number:</label>
+                        <input type="text" class="form-control" id="contact" name="contact" placeholder="Enter contact"
+                            oninput="this.className = ''">
+                        <label for="address">Address:</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Enter address"
+                            rows="2" oninput="this.className = ''">
+                    </div>
+                    <div class="form-group tab">
+                        <h4>Program Details : </h4> <br>
+                        <label for="eventName"> Hall booked for :</label>
+                        <select id="program" name="program" onchange="checkOtherOption()">
+                            <option value="marriage">Marriage</option>
+                            <option value="engagement">Engagement</option>
+                            <option value="meeting">Meeting</option>
+                            <option value="others">Others</option>
+                        </select>
+                        <div id="otherField" style="display:none;">
+                            <label for="otherOption">Please specify:</label>
+                            <input type="text" id="otherOption" name="otherOption">
+                        </div>
+                        <label for="startDate">Date:</label>
+                        <input type="date" class="form-control" id="startDate" name="start_date"
+                            oninput="this.className = ''">
+                        <label for="startDate">Time slot:</label>
+                        <select id="timeslot" name="timeslot" onchange="questions()">
+                            <option value="morning">Morning</option>
+                            <option value="evening">Evening</option>
+                            <option value="full">Full Day</option>
+                        </select>
+                        <label for="description">Description:</label>
+                        <input type="text" class="form-control" id="description" name="description" rows="3"
+                            oninput="this.className = ''">
+                    </div>
+                    <div style="overflow:auto;">
+                        <div style="float:right;">
+                            <button type="button" id="prevBtn" class="btn btn-secondary"
+                                onclick="nextPrev(-1)">Previous</button>
+                            <button type="button" id="nextBtn" class="btn btn-success"
+                                onclick="nextPrev(1)">Next</button>
+                        </div>
+                    </div>
+                    <div style="text-align:center;margin-top:40px;">
+                        <span class="step"></span>
+                        <span class="step"></span>
+                        <span class="step"></span>
+                        <!-- <span class="step"></span> -->
+                    </div>
+                    <!-- <button type="submit" id="sub" class="btn btn-primary">Book</button> -->
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="site-footer">
+        <div class="inner first">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="widget">
+                            <h3 class="heading">About Tour</h3>
+                            <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia,
+                                there live the blind texts.</p>
+                        </div>
+                        <div class="widget">
+                            <ul class="list-unstyled social">
+                                <li><a href="#"><span class="icon-twitter"></span></a></li>
+                                <li><a href="#"><span class="icon-instagram"></span></a></li>
+                                <li><a href="#"><span class="icon-facebook"></span></a></li>
+                                <li><a href="#"><span class="icon-linkedin"></span></a></li>
+                                <li><a href="#"><span class="icon-dribbble"></span></a></li>
+                                <li><a href="#"><span class="icon-pinterest"></span></a></li>
+                                <li><a href="#"><span class="icon-apple"></span></a></li>
+                                <li><a href="#"><span class="icon-google"></span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-2 pl-lg-5">
+                        <div class="widget">
+                            <h3 class="heading">Pages</h3>
+                            <ul class="links list-unstyled">
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-2">
+                        <div class="widget">
+                            <h3 class="heading">Resources</h3>
+                            <ul class="links list-unstyled">
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="widget">
+                            <h3 class="heading">Contact</h3>
+                            <ul class="list-unstyled quick-info links">
+                                <li class="email"><a href="#">mail@example.com</a></li>
+                                <li class="phone"><a href="#">+1 222 212 3819</a></li>
+                                <li class="address"><a href="#">43 Raymouth Rd. Baltemoer, London 3910</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="inner dark">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-md-8 mb-3 mb-md-0 mx-auto">
+                        <p>Copyright &copy;
+                            <script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash;
+                            Designed with love by <a href="https://untree.co" class="link-highlight">Untree.co</a>
+                            <!-- License information: https://untree.co/license/ -->Distributed By <a
+                                href="https://themewagon.com" target="_blank">ThemeWagon</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlayer"></div>
+    <div class="loader">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'js/aos.js' %}"></script>
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <script src="{% static 'js/daterangepicker.js' %}"></script>
+    <script src="{% static 'js/typed.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
+
+
+
+     
+
+
+
+    <script>
+        function questions() {
+
+            var select = document.getElementById("timeslot");
+            var modalContent = `
+            
+                            <div class="modal-header">
+                            <h5 class="modal-title">Further Questions</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                              {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="extra">Do you want the evening, the day before, too ?</label>
+                                    <select id="extra" class="form-control" name="extra">
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Do you want any other features ?</label><br>
+                                    <label for="kitchen">Kitchen</label>
+                                    <input type="checkbox" id="kitchen" name="kitchen" value="kitchen">
+                                    <label for="decoration">Decoration</label>
+                                    <input type="checkbox" id="decoration" name="decoration" value="decoration">
+                                </div>                           
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                         
+                        </div>`;
+            // $('#extraquesions').modal('hide');
+            // $('#extraquesions .modal-content').html(modalContent);
+            // $('#extraquesions').modal('show');
+            if (select.value === "full") {
+
+                $('#extraquesions .modal-content').html(modalContent);
+                $('#extraquesions').modal('show');
+
+            }
+
+            else {
+
+                $('#extraquesions').modal('hide');
+
+            }
+
+
+            //jQuery click handler for close button
+            $(document).on('click', '[data-dismiss="modal"]', function () {
+                $('#extraquesions').modal('hide');
+            });
+        }
+
+
+    </script>
+    <main id="main" class="main">
+
+        <div class="modal fade" id="extraquesions" tabindex="-1" role="dialog" aria-labelledby="extraquesionsLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <!-- Content will be loaded dynamically -->
+                    <div class="modal-body">
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        function checkOtherOption() {
+
+            var select = document.getElementById("program");
+            var otherField = document.getElementById("otherField");
+
+            if (select.value === "others") {
+
+                otherField.style.display = "block"; // Show the field if "Others" is selected
+            } else {
+
+                otherField.style.display = "none";  // Hide the field otherwise
+            }
+
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#getotp').click(function () {
+                var email = $('#email').val();
+                $.ajax({
+                    url: "{% url 'generate_otp' %}",  // URL for the view handling OTP verification
+                    type: 'POST',
+                    data: {
+                        'email': email,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'  // Pass CSRF token
+                    },
+                    success: function (response) {
+                        $('#message').text(response.message);
+                    }
+                });
+            });
+
+            $('#verifyotp').click(function () {
+
+                const otp = $('#otp').val();
+                $.ajax({
+                    url: "{% url 'verify_otp' %}",  // URL for the view handling OTP verification
+                    type: 'POST',
+                    data: {
+                        'otp': otp,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'  // Pass CSRF token
+                    },
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            alert('OTP verified successfully!');
+
+                        } else {
+                            $('#error').text(response.message);  // Display error message
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error:', error);
+                    }
+                });
+            });
+
+        });
+    </script>
+
+    <script>
+        var currentTab = 0; // Current tab is set to be the first tab (0)
+        showTab(currentTab); // Display the current tab
+        function showTab(n) {
+            console.log("currentTab = ", currentTab);
+            console.log("n = ", n);
+            // This function will display the specified tab of the form ...
+            var x = document.getElementsByClassName("tab");
+            x[n].style.display = "block";
+            // ... and fix the Previous/Next buttons:
+            if (n == 0) {
+                document.getElementById("prevBtn").style.display = "none";
+            } else {
+                document.getElementById("prevBtn").style.display = "inline";
+            }
+            if (n == (x.length - 1)) {
+                document.getElementById("nextBtn").innerHTML = "Submit";
+            } else {
+                document.getElementById("nextBtn").innerHTML = "Next";
+            }
+            // ... and run a function that displays the correct step indicator:
+            fixStepIndicator(n)
+        }
+
+        function nextPrev(n) {
+            console.log("currentTab = ", currentTab);
+            console.log("n = ", n);
+            // This function will figure out which tab to display
+            var x = document.getElementsByClassName("tab");
+            // Exit the function if any field in the current tab is invalid:
+            //if (n == 1 && !validateForm()) return false;
+            // Hide the current tab:
+            x[currentTab].style.display = "none";
+            // Increase or decrease the current tab by 1:
+            currentTab = currentTab + n;
+            console.log("currentTab = ", currentTab);
+            // if you have reached the end of the form... :
+            console.log("x.length = ", x.length);
+            if (currentTab >= x.length) {
+                //...the form gets submitted:
+                if (confirm("Are you sure you want to proceed?")) {
+                    document.getElementById("regForm").submit();
+                    return false;
+                } else {
+                    alert("Action canceled.");
+                }
+                
+            }
+            // Otherwise, display the correct tab:
+            showTab(currentTab);
+        }
+
+        function validateForm() {
+            // This function deals with validation of the form fields
+            var x, y, i, valid = true;
+            x = document.getElementsByClassName("tab");
+            y = x[currentTab].getElementsByTagName("input");
+            // A loop that checks every input field in the current tab:
+            for (i = 0; i < y.length; i++) {
+                // If a field is empty...
+                if (y[i].value == "") {
+                    // add an "invalid" class to the field:
+                    y[i].className += " invalid";
+                    // and set the current valid status to false:
+                    valid = false;
+                }
+            }
+            // If the valid status is true, mark the step as finished and valid:
+            if (valid) {
+                document.getElementsByClassName("step")[currentTab].className += " finish";
+            }
+            return valid; // return the valid status
+        }
+
+        function fixStepIndicator(n) {
+            // This function removes the "active" class of all steps...
+            var i, x = document.getElementsByClassName("step");
+            for (i = 0; i < x.length; i++) {
+                x[i].className = x[i].className.replace(" active", "");
+            }
+            //... and adds the "active" class to the current step:
+            x[n].className += " active";
+        }
+    </script>
+</body>
+
+</html>
