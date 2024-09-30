@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import *
 from . models import *
 from django.urls import reverse
-from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.core import serializers
 import random
@@ -14,13 +13,14 @@ from django.utils import timezone
 import logging
 import json
 from django.core.cache import cache
-
+from datetime import datetime, timedelta
 
 randomotp = 123456
 
 
 def index(request):
-    return render(request, 'index.html')
+    hallo = Hall.objects.all()
+    return render(request, 'index.html', { 'halls' :  hallo })
 
 
 def new(request):
@@ -35,328 +35,313 @@ def home(request):
     return render(request, 'hallbooking_app/home.html')
 
 
-def book_hall(request):
-    if request.method == 'POST':
-        # If the user has entered an OTP
-        request.session.flush()
-        if 'otp' in request.POST.get('otp'):
-            otp_response = verify_otp(request)
-            if otp_response.get('success'):
-                # OTP is verified, proceed with the booking
-                name = request.POST.get('name')
-                number = request.POST.get('number')
-                address = request.POST.get('address')
-                hall_id = request.POST.get('hall')
-                startDate = request.POST.get('start_date')
-                event_type = request.POST.get('event_type')
-                event_details = request.POST.get('specify') if event_type == 'others' else None
-                event_description = request.POST.get('event_description')
-                timeslot = request.POST.get('timeslot')
-                # Save user contact
-                user_contact = User.objects.create(
-                    name=name, number=number, email=request.session['email'], address=address
-                )
-
-                # Create the booking
-                booking = Booking.objects.create(
-                    
-                    date=startDate,
-                    hall_id=1,
-                    user_id=user_contact,
-                    program=event_type if event_type != 'others' else event_details,
-                    description=event_description,
-                    approval_status=0,
-                    ac=1,
-                    timeslot=timeslot,
-                )
-
-                return redirect('index')
-
-            else:
-                messages.error(request, 'Invalid OTP. Please try again.')
-
-        else:
-            # First step: user enters email, generate OTP and send
-            send_otp(request)
-            messages.success(request, 'OTP has been sent to your email.')
-
-    return render(request, 'new_booking.html')
-
-
-def fetch_bookings(request):
-    bookings = Booking.objects.all().values('date')  # Adjust based on your model
-    response_data = [
-        {
-            'date': booking['date'],
-            'title': 'Your Event Title'  # You can customize this title as needed
-        } 
-        for booking in bookings
-    ]
-    return JsonResponse(response_data, safe=False)
-
-
 def calendar_view(request):
     return render(request, 'calendar.html')
 
-# def verify_otp(request):
+def book_hall(request):
+    if request.method == 'POST':
+        # Check if OTP is already verified (in the session)
+        if not request.session.get('otp_verified', False):
+            return JsonResponse({'success': False, 'message': 'OTP verification required'}, status=400)
+        
+        # Now proceed with the rest of the form data
+        name = request.POST.get('name')
+        number = request.POST.get('number')
+        address = request.POST.get('address')
+        startDate = request.POST.get('start_date')
+        event_type = request.POST.get('event_type')
+        event_details = request.POST.get('specify') if event_type == 'others' else None
+        event_description = request.POST.get('event_description')
+        timeslot = request.POST.get('timeslot')
+        hall_id = 3
+        selected_hall = Hall.objects.get(id=hall_id)
+        evening_before = request.POST.get('eveningBefore')
+        features = request.POST.getlist('features')
+
+        # Retrieve the email from the session
+        email = request.session.get('email')
+
+        # Create the user contact details
+        user_contact = User.objects.create(
+            name=name, number=number, email=email, address=address
+        )
+        
+        # Create the booking
+        booking = Booking.objects.create(
+            date=startDate,
+            user=user_contact,
+            program=event_type if event_type != 'others' else event_details,
+            description=event_description,
+            approval_status=0,
+            ac=1,
+            timeslot=timeslot,
+            evening_before=evening_before,
+            features=', '.join(features),
+            hall=selected_hall,
+        )
+
+        # Handle "full day" booking case
+        if timeslot == "full":
+            d1 = startDate
+            date = datetime.strptime(d1, "%Y-%m-%d")
+            day_before = (date - timedelta(days=1)).date()
+            
+            booking2 = Booking.objects.create(
+                date=day_before,
+                user=user_contact,
+                program=event_type if event_type != 'others' else event_details,
+                description=event_description,
+                approval_status=0,
+                ac=1,
+                timeslot="evening",
+                evening_before=evening_before,
+                features=', '.join(features),
+                hall=selected_hall,  # Assuming the same hall is selected
+            )
+
+        return JsonResponse({'success': True, 'message': 'Hall booked successfully'})
+
+    else:
+        start_date = request.GET.get('start_date', None)
+        timeslot = request.GET.get('timeslot', None)
+        available_halls = []
+
+        if start_date and timeslot:
+            booked_halls = Booking.objects.filter(date=start_date, timeslot=timeslot).values_list('hall_id', flat=True)
+            available_halls = Hall.objects.exclude(id__in=booked_halls)
+            print(available_halls)
+            print(booked_halls)
+
+        return render(request, 'new_booking.html', {
+            'available_halls': available_halls,
+        })
+
+
+
+# def book_hall(request):
 #     if request.method == 'POST':
-#         otp = request.POST.get('otp')
-#         email = request.session.get('email')
+#         # Check if the OTP is already verified
+#         if not request.session.get('otp_verified', False):  # Check if OTP is verified in session
+#             return JsonResponse({'success': False, 'message': 'OTP verification required'}, status=400)
+        
+#         name = request.POST.get('name')
+#         number = request.POST.get('number')
+#         address = request.POST.get('address')
+#         startDate = request.POST.get('start_date')
+#         event_type = request.POST.get('event_type')
+#         event_details = request.POST.get('specify') if event_type == 'others' else None
+#         event_description = request.POST.get('event_description')
+#         timeslot = request.POST.get('timeslot')
+#         hall_id = request.POST.get('hall')
+#         selected_hall = Hall.objects.get(id=hall_id)
 
-#         try:
-#             booking = User.objects.get(email=email)
-#             if booking.otp == otp:
-#                 booking.is_verified = True
-#                 booking.otp = ''
-#                 booking.save()
-#                 return JsonResponse({'status': 'success', 'message': 'OTP verified.'})
-#             else:
-#                 return JsonResponse({'status': 'error', 'message': 'Invalid OTP.'})
-#         except User.DoesNotExist:
-#             return JsonResponse({'status': 'error', 'message': 'Email not found.'})
+#         evening_before = request.POST.get('eveningBefore')
+#         features = request.POST.getlist('features')
+#         print(f"Evening Before: {evening_before}")
+#         print(f"Features: {features}")
+        
+#         # Create the user contact details
+#         user_contact = User.objects.create(
+#             name=name, number=number, email=request.POST.get('email'), address=address
+#         )
+        
+#         # Create the booking
+#         booking = Booking.objects.create(
+#             date=startDate,
+#             user=user_contact,
+#             program=event_type if event_type != 'others' else event_details,
+#             description=event_description,
+#             approval_status=0,
+#             ac=1,
+#             timeslot=timeslot,
+#             evening_before=evening_before,
+#             features=', '.join(features),
+#             hall=selected_hall,
+#         )
 
+#         # Handle the "full day" scenario with additional booking for evening before
+#         if timeslot == "full":
+#             d1 = startDate
+#             date = datetime.strptime(d1, "%Y-%m-%d")
+#             day_before = (date - timedelta(days=1)).date()
+            
+#             booking2 = Booking.objects.create(
+#                 date=day_before,
+#                 user=user_contact,
+#                 program=event_type if event_type != 'others' else event_details,
+#                 description=event_description,
+#                 approval_status=0,
+#                 ac=1,
+#                 timeslot="evening",
+#                 evening_before=evening_before,
+#                 features=', '.join(features),
+#                 hall=selected_hall,  # Assuming same hall is selected
+#             )
+
+#         return JsonResponse({'success': True, 'message': 'Hall booked successfully'})
+
+#     else:
+#         start_date = request.GET.get('start_date', None)
+#         timeslot = request.GET.get('timeslot', None)
+#         available_halls = []
+
+#         if start_date and timeslot:
+#             booked_halls = Booking.objects.filter(date=start_date, timeslot=timeslot).values_list('hall_id', flat=True)
+#             available_halls = Hall.objects.exclude(id__in=booked_halls)
+#             print(available_halls)
+#             print(booked_halls)
+
+#         return render(request, 'new_booking.html', {
+#             'available_halls': available_halls,
+#         })
+
+
+
+
+# def fetch_bookings(request):
+#     if request.method == 'GET':
+#         bookings = Booking.objects.all().values('date', 'timeslot')  # Fetch booking date and timeslot
+#         booking_list = list(bookings)
+#         return JsonResponse(booking_list, safe=False)
+
+
+# def fetch_bookings(request):
+#     if request.method == 'GET':
+#         hall_id = request.GET.get('hall_id')
+#         if hall_id:
+#             bookings = Booking.objects.filter(hall_id=hall_id).values('date', 'timeslot')
+#         else:
+#             bookings = []
+#         booking_list = list(bookings)
+#         return JsonResponse(booking_list, safe=False)
+
+
+def fetch_bookings(request, hall_id):
+    bookings = Booking.objects.filter(hall_id=hall_id).values('date', 'timeslot')
+    return JsonResponse(list(bookings), safe=False)
 
 def generate_otp():
     """Generate a 6-digit OTP"""
     return random.randint(100000, 999999)
 
+def check_availability(request):
+    date = request.GET.get('date')
+    timeslot = request.GET.get('timeslot')
+    hall_id = request.GET.get('hall_id')
+    
+    is_available = not Booking.objects.filter(hall_id=hall_id, date=date, timeslot=timeslot).exists()
+    return JsonResponse({'available': is_available})
+
+
+# def send_otp(request):
+#     if request.method == 'POST':
+#         request.session['test'] = 'test_value'
+#         print("Session before setting OTP:", request.session.items())
+
+#         data = json.loads(request.body)
+#         email = data.get('email')
+#         print("Email received:", email)
+
+#         otp = generate_otp()
+#         request.session['otp'] = str(otp)
+#         request.session['email'] = email
+#         request.session.modified = True  # Mark session as modified
+        
+#         print("Stored OTP in session:", request.session.get('otp'))
+#         print("Session data after setting OTP:", request.session.items())
+
+#         userotp = User_OTP.objects.create(
+#                 otp=otp, is_verified=False, user=user_contact,
+#         )
+#         # Attempt to send OTP via email
+#         try:
+#             send_mail(
+#                 'Your OTP for Hall Booking',
+#                 f'Your OTP is {otp}. It is valid for 10 minutes.',
+#                 'no-reply@hallbooking.com',
+#                 [email],
+#                 fail_silently=False,
+#             )
+#         except Exception as e:
+#             print("Error sending email:", e)
+#             return JsonResponse({'success': False, 'message': 'Failed to send OTP email'}, status=500)
+        
+#         return JsonResponse({'success': True, 'message': 'OTP sent successfully'})
+
+#     return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
+
+
+# def verify_otp(request):
+#     if request.method == 'POST':
+#         request.session['test'] = 'test_value'  # Just for testing
+#         print("Session data in verify_otp:", request.session.items())
+#         print("Session ID in verify_otp:", request.session.session_key)
+
+#         data = json.loads(request.body)  # Load the JSON data from the request body
+#         entered_otp = data.get('otp')  # Get the OTP from the JSON data
+#         session_otp = request.session.get('otp')
+#         print("Entered OTP:", entered_otp)
+#         print("Stored session OTP:", session_otp)
+
+#         if entered_otp == session_otp:
+#             print("OTP verified successfully.")
+#             return JsonResponse({'success': True, 'message': 'OTP verified successfully'})
+#         else:
+#             print("OTP verification failed.")
+#             return JsonResponse({'success': False, 'message': 'OTP is incorrect'})
+
+#     return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
+
 
 def send_otp(request):
     if request.method == 'POST':
-        request.session['test'] = 'test_value'  # Create a test session variable
-        print("Test session data:", request.session.items())
         data = json.loads(request.body)
         email = data.get('email')
-        # email = request.POST.get('email')
-        print(email)
-        otp = generate_otp()
-        randomotp = otp
-        print("global = ", randomotp)
-        # Save OTP and email in session
-        request.session['otp'] = str(otp)
-        request.session['temp_otp'] = otp
-
         
-        print(f"Stored OTP in session: {request.session['otp']}")
-        print(request.session['otp'])
+        # Generate OTP
+        otp = generate_otp()  # Make sure this function is implemented
+        
+        # Store OTP and email in session
+        request.session['otp'] = otp
         request.session['email'] = email
         
-        print("Session data before setting OTP:", request.session.items())
-        request.session['otp'] = otp
-        print("Session data after setting OTP:", request.session.items())
-        print("Session ID in send_otp:", request.session.session_key)
-
+        # You can print the OTP for testing purposes
+        print(f"Generated OTP: {otp}")
         
-        print("Current session cache:", cache.get('session_key'))
-
-        # Send OTP via email (assuming you have email settings configured)
-        send_mail(
-            'Your OTP for Hall Booking',
-            f'Your OTP is {otp}. It is valid for 10 minutes.',
-            'no-reply@hallbooking.com',
-            [email],
-            fail_silently=False,
-        )
-        print(f"Sending OTP {otp} to {email}")
-        print(f"Session data after sending OTP: {request.session.items()}")
         return JsonResponse({'success': True, 'message': 'OTP sent successfully'})
     return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
 
 
 def verify_otp(request):
-    
     if request.method == 'POST':
-        request.session['test'] = 'test_value'  # Create a test session variable
-        print("Test session data:", request.session.items())
-        print("Session data in verify_otp:", request.session.items())
-        print("Session ID in verify_otp:", request.session.session_key)
+        data = json.loads(request.body)
+        entered_otp = data.get('otp')
         
-        data = json.loads(request.body)  # Load the JSON data from the request body
-        entered_otp = data.get('otp')  # Get the OTP from the JSON data
+        # Retrieve OTP and email from session
         session_otp = str(request.session.get('otp'))
-        print(entered_otp)
-        print(session_otp)
-        print(randomotp)
+        email = request.session.get('email')
+        
+        # print("session ",session_otp)
+        # print("entered ",entered_otp)
+        
         if entered_otp == session_otp:
-            
-            print("ok")
+            # Mark OTP as verified in the session
+            request.session['otp_verified'] = True
             return JsonResponse({'success': True, 'message': 'OTP verified successfully'})
-
         else:
-            print("no")
-            return JsonResponse({'success': False, 'message': 'OTP is incorrect'})
-    
+            return JsonResponse({'success': False, 'message': [entered_otp,session_otp] })
     return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
 
 
 def test_session(request):
     if request.method == 'POST':
-        request.session['test'] = 'test_value'
-        return JsonResponse({'success': True})
-
-    value = request.session.get('test', 'not set')
-    return JsonResponse({'session_value': value})
+        request.session['test_key'] = 'test_value'
+        return JsonResponse({'success': True, 'test_key': request.session['test_key']})
+    return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
 
 
-# def list_halls(request):
-#     halls = Hall.objects.all()  # Fetch all halls from the database
-#     return render(request, 'hallbooking_app/list_halls.html', {'halls': halls})
-
-# def booking_confirmation(request, booking_id):
-#     # Fetch the booking details using the booking_id
-#     booking = get_object_or_404(Booking, id=booking_id)
-#     user = booking.user_contact
-#     print(user)
-    
-#     # Pass the booking details to the template
-#     return render(request, 'hallbooking_app/booking_confirmation.html', {'booking': booking,'user': user,})
-
-# def generate_otp(request):
-    
-#     if request.method == 'POST':
-#         email = request.POST.get('email')
-
-#         booking, created = User.objects.get_or_create(email=email, number='584',)
-
-#         # Generate and send OTP
-#         otp = generate_otp2()
-#         booking.otp = otp
-#         booking.save()
-
-#         send_otp_email(email, otp)
-
-#         request.session['email'] = email  # Save email in session for next step
-
-#         return JsonResponse({'status': 'success', 'message': 'OTP sent successfully.'})
-
-# def otp(request):
-#     print("keruo ?")
-#     if request.method == 'POST':
-#         print("keri !")
-#         email = request.POST.get('email')
-#         print(email)
-#         otp = generate_otp()
-#         print(otp)
-#         send_otp_email(email, otp)
-#     return render(request, 'index.html')
-
-# def book(request):
-#     user = User.objects.all()
-#     book = Booking.objects.all()
-#     if request.method == 'POST':
-#         name = request.POST.get('name')
-#         date = request.POST.get('start_date')
-#         timeslot = request.POST.get('start_time')
-#         description = request.POST.get('description')
-#         program = request.POST.get('program')
-#         contact = request.POST.get('contact')
-#         ac = request.POST.get('ac')
-#         email = request.POST.get('email')
-#         address = request.POST.get('address')
-#         event = User.objects.create(
-# 			name=name,
-#             contact=contact,
-#             email=email,
-#             address=address,
-# 		)
-#         booked = Booking.objects.create(
-# 			date=date,
-#             program=program,
-#             timeslot=timeslot,
-# 			description=description,
-# 			approval_status=False,
-#             ac = ac,
-# 		)
-#     else:
-#         return render(request, 'booking_app/create_event.html', {'event': user})
-    
-#     return render(request, 'booking.html')
-
-# def step(request):
-#     return render(request, 'step_booking.html')
-
-# def create_event(request):
-    
-#     categories = User.objects.all()
-#     if request.method == 'POST':
-#         name = request.POST.get('name')
-#         start_date = request.POST.get('start_date')
-#         start_time = request.POST.get('start_time')
-#         description = request.POST.get('description')
-#         organizer = request.POST.get('organizer')
-#         contact = request.POST.get('contact')
-        
-#         User = User.objects.create(
-# 			name=name,
-#             contact=contact,
-# 			start_date=start_date,
-#             start_time=start_time,
-# 			description=description,
-# 			organizer=organizer,
-# 		)
-        
-#         return redirect('category_events')
-#     else:
-#         return render(request, 'booking_app/create_event.html', {'event': categories})
-
-# def register(request):
-#     if request.method == 'POST':
-#         # username = request.POST['username']
-#         # password = request.POST['password']
-#         email = request.POST['email']
-#         # contact = request.POST.get('contact')
-#         # address = request.POST.get('address')
-#         #user = User.objects.create(username=username, password=password, email=email, contact = contact, address = address, )
-        
-#         # Generate OTP and send it via email
-#         otp = generate_otp()
-#         # user.otp = otp
-#         # user.save()
-#         send_otp_email(email, otp)
-#         return redirect('verify')  # Redirect to OTP verification page
-#     return render(request, 'new_booking.html')
-
-# def verify(request):
-#     if request.method == 'POST':
-#         rotp = request.POST.get('otp')
-#         if rotp == otp:
-#             return JsonResponse({'status': 'success', 'message': 'OTP verified successfully.'})
-#         else:
-#             return JsonResponse({'status': 'error', 'message': 'Invalid OTP. Please try again.'})
-
-#     return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
-
-# def verify_email(request, user_id):
-#     user = User.objects.get(id=user_id)
-
-#     if request.method == 'POST':
-#         entered_otp = request.POST['otp']
-        
-#         if entered_otp == user.otp:
-#             user.is_verified = True
-#             user.otp = ''  # Clear OTP
-#             user.save()
-#             return redirect('login')  # Redirect to login after verification
-        
-#         else:
-#             error = 'Invalid OTP. Please try again.'
-#             return render(request, 'verify_email.html', {'error': error})
-
-#     return render(request, 'verify_email.html', {'user_id': user_id})
-
-# def booking_confirmation(request, booking_id):
-#     # Fetch the booking details using the booking_id
-#     booking = get_object_or_404(Booking, id=booking_id)
-#     user = booking.user_contact
-#     print(user)
-    
-#     # Pass the booking details to the template
-#     return render(request, 'hallbooking_app/booking_confirmation.html', {'booking': booking,'user': user,})
-
-# def send_otp_email(email, otp):
-    
-#     subject = 'Your OTP for registration'
-#     message = f'Your One-Time Password (OTP) is {otp}. Please enter it to verify your email.'
-#     from_email = settings.EMAIL_HOST_USER
-#     send_mail(subject, message, from_email, [email])
+def check_session(request):
+    otp = request.session.get('otp', 'No OTP found')
+    email = request.session.get('email', 'No email found')
+    return JsonResponse({'otp': otp, 'email': email})
 

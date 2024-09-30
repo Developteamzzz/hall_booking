@@ -199,7 +199,7 @@
 
                 <ul class="js-clone-nav d-none d-lg-inline-block text-left site-menu float-right">
                     <li class="active"><a href="{% url 'index' %}">Home</a></li>
-                    <li><a href="#">Check Availability</a></li>
+                    <li><a href="{% url 'calendar' %}">Check Availability</a></li>
                     <li><a href="{% url 'new' %}">Book a Hall Now</a></li>
                     <li><a href="{% url 'about' %}">About</a></li>
                 </ul>
@@ -231,12 +231,12 @@
 
                         <label for="otp">OTP:</label>
                         <input type="text" class="form-control" id="otp" name="otp"
-                            placeholder="Enter the OTP received on your email id" required ><br>
+                            placeholder="Enter the OTP received on your email id" required><br>
                         <button type="button" id="verifyOTPBtn" class="btn btn-warning">Verify OTP</button>
                         <!-- <p id="message"></p> -->
                         <br />
                     </div>
-                    <div class="form-group" id="step2" style="display: none"">
+                    <div class="form-group" id="step2" style="display: none">
                         <h4>Contact Details: </h4> <br>
                         <label for=" organizer">Organizer Name :</label>
                         <input type="text" class="form-control" id="user_contact_name" name="name"
@@ -253,6 +253,14 @@
                     </div>
                     <div class="form-group" id="step3" style="display: none">
                         <h4>Program Details : </h4> <br>
+                        <label for="hall">Select Hall:</label>
+                        <select name="hall" id="hall" required>
+                            {% for hall in available_halls %}
+                            <option value="{{ hall.id }}">{{ hall.name }} ({{ hall.capacity }} people)</option>
+                            {% empty %}
+                            <option>No available halls for the selected date and timeslot</option>
+                            {% endfor %}
+                        </select>
                         <label for="event_type">Event Type</label>
                         <select class="form-control" id="event_type" name="event_type" required>
                             <option value="marriage">Marriage</option>
@@ -397,8 +405,7 @@
     </div>
 
 
-    <div id="termsModal" class="modal">
-
+    <div id="termsModal" class="modal" style="display:none;">
         <!-- Modal content -->
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -419,31 +426,35 @@
             </div>
 
             <!-- Close button at the bottom -->
-            <button class="close-btn">Close</button>
+            <button class="close-btn" id="closeTermsModalBtn">Close</button>
         </div>
-
     </div>
 
-    <div id="furtherQuestionsModal" class="modal">
 
-        <!-- Modal content -->
+    <div id="furtherQuestionsModal" class="modal" style="display:none;">
         <div class="modal-content">
             <h3>Further Questions</h3>
-            <p>1. Do you need the evening the day before also?</p>
-            <label>
-                <input type="radio" name="eveningBefore" value="yes"> Yes
-            </label><br>
-            <label>
-                <input type="radio" name="eveningBefore" value="no"> No
-            </label><br>
-            <p>1. Do you need any other features ?</p>
-            <label for="kitchen">Kitchen</label>
-            <input type="checkbox" id="kitchen" name="kitchen" value="kitchen">
-            <label for="decoration">Decoration</label>
-            <input type="checkbox" id="decoration" name="decoration" value="decoration">
-            <button class="close-btn">Close</button>
+            <form id="furtherQuestionsForm"> <!-- Start of the form -->
+                <p>1. Do you need the evening the day before also?</p>
+                <label>
+                    <input class="form-control" type="radio" name="eveningBefore" value="yes"> Yes
+                </label><br>
+                <label>
+                    <input type="radio" class="form-control" name="eveningBefore" value="no"> No
+                </label><br>
+                <p>2. Do you need any other features?</p>
+                <label for="kitchen">Kitchen</label>
+                <input class="form-control" type="checkbox" id="kitchen" name="features" value="kitchen">
+                <label for="decoration">Decoration</label>
+                <input class="form-control" type="checkbox" id="decoration" name="features" value="decoration">
+                <button type="button" class="close-btn" id="closeFurtherQuestions">Close</button>
+                <button class="submit-btn" type="submit">Submit</button> <!-- Submit button -->
+            </form> <!-- End of the form -->
         </div>
     </div>
+
+
+
 
 
     <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
@@ -507,7 +518,7 @@
                 document.getElementById("step2").style.display = "block";
                 document.getElementById("prevBtn").style.display = "none";
                 document.getElementById("nextBtn").style.display = "block";
-            } 
+            }
             else if (currentStep === 2) {
                 // Move to Step 3
                 if (document.getElementById("user_contact_name").value.trim() === "" ||
@@ -554,57 +565,85 @@
                 }
             });
     </script>
+    <!-- next button logic -->
 
 
     <script>
         // Get modal element
-        var timemodal = document.getElementById("furtherQuestionsModal");
-        console.log(timemodal);
-        // Check the selected timeslot
+        var furtherQuestionsModal = document.getElementById("furtherQuestionsModal");
+
+        // Function to check the selected timeslot
         function checkTimeslot() {
             var timeslot = document.getElementById("timeslot").value;
-            console.log(timeslot);
             if (timeslot === "full") {
-                timemodal.style.display = "block"; // Show the modal if "full_day" is selected
+                furtherQuestionsModal.style.display = "block"; // Show modal if "full" is selected
             }
         }
 
-        // Get the close button
-        var closeButton = document.querySelector('.close-btn');
+        // Get the close button for Further Questions Modal
+        var closeFurtherQuestionsButton = document.getElementById("closeFurtherQuestions");
+
         // When the user clicks the Close button, close the modal
-        closeButton.onclick = function () {
-            timemodal.style.display = "none";
+        closeFurtherQuestionsButton.onclick = function () {
+            furtherQuestionsModal.style.display = "none"; // Hide the modal when close button is clicked
         }
 
         // When the user clicks anywhere outside of the modal, close it
         window.onclick = function (event) {
-            if (event.target == modal) {
-                timemodal.style.display = "none";
+            if (event.target == furtherQuestionsModal) {
+                furtherQuestionsModal.style.display = "none"; // Hide the modal if clicked outside
             }
         }
+        document.getElementById('furtherQuestionsForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            const eveningBefore = document.querySelector('input[name="eveningBefore"]:checked');
+            const features = Array.from(document.querySelectorAll('input[name="features"]:checked')).map(el => el.value);
+
+            const eveningBeforeValue = eveningBefore ? eveningBefore.value : null;
+
+            // Store these values (you can use AJAX to send this data to your server or save it in a variable)
+            console.log('Evening Before:', eveningBeforeValue);
+            console.log('Features:', features);
+
+            // Optionally close the modal here
+            document.getElementById('furtherQuestionsModal').style.display = 'none';
+        });
+
+
+        // document.getElementById('closeFurtherQuestions').addEventListener('click', function () {
+        //     document.getElementById('furtherQuestionsModal').style.display = 'none';
+        // });
+
     </script>
+
+
+
     <script>
         // Get modal elements
         var termsModal = document.getElementById("termsModal");
-
 
         // Open Terms and Conditions modal
         document.getElementById("openModalBtn").onclick = function () {
             termsModal.style.display = "block";
         }
-        // Close the Terms modal
-        function closeTermsModal() {
-            termsModal.style.display = "none";
+
+        // Get the close button for Terms Modal
+        var closeTermsModalButton = document.getElementById("closeTermsModalBtn");
+
+        // When the user clicks the Close button, close the modal
+        closeTermsModalButton.onclick = function () {
+            termsModal.style.display = "none"; // Hide the modal when close button is clicked
         }
 
-
-        // When the user clicks anywhere outside of the modals, close them
+        // When the user clicks anywhere outside of the modal, close it
         window.onclick = function (event) {
             if (event.target == termsModal) {
-                closeTermsModal();
+                termsModal.style.display = "none"; // Hide the modal if clicked outside
             }
         }
     </script>
+
 
 
     <!-- <script>
@@ -832,10 +871,10 @@
 
 
     <script>
-        document
-            .getElementById("sendOTPBtn")
-            .addEventListener("click", function () {
-                var email = document.getElementById("email").value;
+        document.getElementById("sendOTPBtn").addEventListener("click", function () {
+            var email = document.getElementById("email").value;
+            if (email == "") { alert("enter a valid email id") }
+            else {
                 fetch("{% url 'send_otp' %}", {
                     method: "POST",
                     headers: {
@@ -854,11 +893,11 @@
                             alert("Error sending OTP. Please try again.");
                         }
                     });
-            });
+            }
+        });
 
         document
-            .getElementById("verifyOTPBtn")
-            .addEventListener("click", function () {
+            .getElementById("verifyOTPBtn").addEventListener("click", function () {
                 var otp = document.getElementById("otp").value;
                 fetch("{% url 'verify_otp' %}", {
                     method: "POST",
@@ -870,9 +909,11 @@
                 })
                     .then((response) => response.json())
                     .then((data) => {
+                        console.log(data);
                         if (data.success) {
                             document.getElementById("step1").style.display = "none";
                             document.getElementById("step2").style.display = "block";
+                            alert("OTP verified successfully.");
                             document.getElementById("emailStep2").value =
                                 document.getElementById("email").value;
                         } else {
@@ -880,6 +921,37 @@
                         }
                     });
             });
+        document.getElementById("submitBookingBtn").addEventListener("click", function (event) {
+            event.preventDefault();
+            var formData = new FormData(document.getElementById("regForm"));
+            const eveningBefore = document.querySelector('input[name="eveningBefore"]:checked');
+            if (eveningBefore) {
+                formData.append('eveningBefore', eveningBefore.value);
+            }
+            const features = Array.from(document.querySelectorAll('input[name="features"]:checked')).map(el => el.value);
+            features.forEach(feature => {
+                formData.append('features', feature); // Append each feature
+            });
+            fetch("{% url 'book_hall' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Hall booked successfully.");
+                        window.location.href = "{% url 'index' %}";
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
     </script>
 </body>
 

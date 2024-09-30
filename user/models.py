@@ -1,25 +1,23 @@
 from django.db import models
-from django.contrib.auth.models import User
 
-
-class User_OTP(models.Model):
-    
-    otp = models.IntegerField()
-    is_verified = models.BooleanField()
-    
-    
 class User(models.Model):
 
     name = models.CharField(max_length=100)
     number = models.IntegerField()
     email = models.CharField(max_length=100)
     address = models.CharField(max_length=250)
-    user_otp = models.ForeignKey(User_OTP, on_delete=models.CASCADE,null=True, blank=True)
+    
 
     def __str__(self):
         return self.email
 
 
+class User_OTP(models.Model):
+    
+    otp = models.IntegerField()
+    is_verified = models.BooleanField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
+    
 
 class Hall(models.Model):
     
@@ -28,48 +26,110 @@ class Hall(models.Model):
     location = models.CharField(max_length=255, default="perumbavoor") 
     description = models.TextField(blank=True, null=True)
     amenities = models.CharField(max_length=255, blank=True, null=True)
+    #image = models.ForeignKey(ImageGallery, on_delete=models.CASCADE,null=True, blank=True)
 
+    
+    
     def __str__(self):
         return self.name
     
-   
-# class UserContact(models.Model):
-#     name = models.CharField(max_length=100)
-#     number = models.CharField(max_length=15)
-#     address = models.TextField()
-#     email = models.EmailField()
-#     otp = models.CharField(max_length=6, blank=True, null=True)
-#     is_verified = models.BooleanField(default=False)
+# class Hall(models.Model):
+#     hallname=models.CharField(max_length=100)
+#     place=models.CharField(max_length=100)
+#     landmark=models.CharField(max_length=100)
+#     capacity=models.CharField(max_length=100)
+#     pincode=models.CharField(max_length=100)
+#     district=models.CharField(max_length=100)
+#     ac_nonac_both=models.CharField(max_length=100)
+#     rent=models.CharField(max_length=100)
+#     ac_rent=models.CharField(max_length=100)
+#     non_ac_rent=models.CharField(max_length=100)
+#     owner_name=models.CharField(max_length=100)
+#     contact=models.CharField(max_length=100)
+#     availability=models.CharField(max_length=100)
+#     images=models.CharField(max_length=100)
+#     hall_feature=models.CharField(max_length=100)
+#     addedon=models.DateField(auto_now_add=True)
+#     isdelete=models.IntegerField(default=0)
+#     addedby=models.IntegerField(default=0)
 
-#     def __str__(self):
-#         return self.name
-   
-    
-# class Booking(models.Model):
-#     hall = models.ForeignKey(Hall, on_delete=models.CASCADE)
-#     start_time = models.DateTimeField()
-#     end_time = models.DateTimeField()
-#     user_contact = models.ForeignKey(UserContact, on_delete=models.CASCADE)
-#     event_type = models.CharField(max_length=50)
-#     event_details = models.CharField(max_length=255, blank=True)  # Can keep for reference if needed
-#     event_description = models.TextField(blank=True)
-#     ac = models.BooleanField()
-#     approval_status = models.BooleanField()
-#     added_on = models.DateTimeField(auto_now_add=True)
-#     timeslot = models.CharField(max_length=10)
 
-#     def __str__(self):
-#         return f"{self.hall.name} booked for {self.event_type}"
-    
-    
 class Booking(models.Model):
     
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    # hall_id = models.ForeignKey(Hall, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    hall = models.ForeignKey(Hall, on_delete=models.CASCADE, null=True, blank=True,default=1)
     date = models.CharField(max_length=100)
     timeslot = models.CharField(max_length=10)
     description = models.CharField(max_length=100, default='')
     ac = models.BooleanField()
     approval_status = models.BooleanField()
     added_on = models.DateTimeField(auto_now_add=True)
+    program = models.CharField(max_length=100)
+    evening_before = models.CharField(max_length=3,default="no",null=True)
+    features = models.TextField()
+
+
+# class Booking(models.Model):
+#     name=models.CharField(max_length=100)
+#     address=models.CharField(max_length=100)
+#     contact=models.CharField(max_length=100)
+#     date = models.DateField()
+#     timeslot=models.CharField(max_length=100)
+#     ac=models.CharField(max_length=100)
+#     description=models.CharField(max_length=100)
+#     event_name=models.CharField(max_length=100)
+#     addedon=models.DateField(auto_now_add=True)
+#     approval_status=models.CharField(max_length=100)
+#     hallname=models.CharField(max_length=100)
+
+
+
+# class Feature(models.Model):
+#     featurename=models.CharField(max_length=100)
+#     addedby=models.IntegerField(default=0)
+#     addedon=models.DateField(auto_now_add=True)
+#     isdelete=models.IntegerField(default=0)
+
+# class Availability(models.Model):
+#     hall=models.CharField(max_length=100)
+#     sunday=models.IntegerField(default=0)
+#     monday=models.IntegerField(default=0)
+#     tuesday=models.IntegerField(default=0)
+#     wednessday=models.IntegerField(default=0)
+#     thursday=models.IntegerField(default=0)
+#     friday=models.IntegerField(default=0)
+#     saturday=models.IntegerField(default=0)
+#     addedon=models.DateField(auto_now_add=True)
+#     isdelete=models.IntegerField(default=0)
+#     addedby=models.IntegerField(default=0)
+
+
+
+# class Hallfeature(models.Model):
+#     hall=models.CharField(max_length=100)
+#     feature=models.CharField(max_length=100)
+#     addedby=models.IntegerField(default=0)
+#     addedon=models.DateField(auto_now_add=True)
+#     isdelete=models.IntegerField(default=0)
+
+
+# class Imagegallery(models.Model):
+#     hall=models.CharField(max_length=100)
+#     image=models.CharField(max_length=100)
+#     addedby=models.IntegerField(default=0)
+#     addedon=models.DateField(auto_now_add=True)
+#     isdelete=models.IntegerField(default=0)
+
+
+# class Inoperability(models.Model):
+#     hallname=models.CharField(max_length=100, null=False)
+#     start_date=models.CharField(max_length=100)
+#     end_date=models.CharField(max_length=100)
+#     reason=models.CharField(max_length=100)
+#     addedby=models.IntegerField(default=0)
+#     addedon=models.DateField(auto_now_add=True)
+#     isdelete=models.IntegerField(default=0)
+
+
+
 
