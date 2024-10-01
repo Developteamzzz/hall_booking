@@ -55,8 +55,8 @@
 
 				<ul class="js-clone-nav d-none d-lg-inline-block text-left site-menu float-right">
 					<li class="active"><a href="{% url 'index' %}">Home</a></li>
-					<li><a href="{% url 'calendar' %}">Check Availability</a></li>
-					<li><a href="{% url 'new' %}">Book a Hall Now</a></li>
+					<!-- <li><a href="{% url 'calendar' %}">Check Availability</a></li> -->
+					
 					<li><a href="{% url 'about' %}">About</a></li>
 				</ul>
 
@@ -88,6 +88,82 @@
 		</div>
 	</div>
 
+
+	<div class="untree_co-section">
+		<div class="container">
+			<div class="row text-center justify-content-center mb-5">
+				<!-- <div class="col-lg-7">
+					<h2 class="section-title text-center">Slideshow</h2>
+				</div> -->
+			</div>
+
+			<div class="owl-carousel owl-3-slider">
+
+				<div class="item">
+					<a class="media-thumb" href="{% static 'images/9.jpg' %}" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Seema Auditorium</h3>
+							<span class="location">Perumbavoor</span>
+						</div>
+						<img src="{% static 'images/9.jpg' %}" alt="Image" class="img-fluid">
+					</a>
+				</div>
+
+				<div class="item">
+					<a class="media-thumb" href="{% static 'images/10.jpg' %}" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Bahadoor Hall</h3>
+							<span class="location">Kodungalloor</span>
+						</div>
+						<img src="{% static 'images/10.jpg' %}" alt="Image" class="img-fluid">
+					</a>
+				</div>
+
+				<div class="item">
+					<a class="media-thumb" href="{% static 'images/11.jpg' %}" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Municipal Hall</h3>
+							<span class="location">S.N Puram</span>
+						</div>
+						<img src="{% static 'images/11.jpg' %}" alt="Image" class="img-fluid">
+					</a>
+				</div>
+
+
+				<div class="item">
+					<a class="media-thumb" href="{% static 'images/12.jpg' %}" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Seema Auditorium</h3>
+							<span class="location">Perumbavoor</span>
+						</div>
+						<img src="{% static 'images/12.jpg' %}" alt="Image" class="img-fluid">
+					</a>
+				</div>
+
+				<div class="item">
+					<a class="media-thumb" href="{% static 'images/13.jpg' %}" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Municipal Hall</h3>
+							<span class="location">S.N Puram</span>
+						</div>
+						<img src="{% static 'images/13.jpg' %}" alt="Image" class="img-fluid">
+					</a>
+				</div>
+
+				<div class="item">
+					<a class="media-thumb" href="{% static 'images/14.jpg' %}" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Bahadoor Hall</h3>
+							<span class="location">Kodungalloor</span>
+						</div>
+						<img src="{% static 'images/14.jpg' %}" alt="Image" class="img-fluid">
+					</a>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
 
 	<div class="untree_co-section">
 		<div class="container">
@@ -137,80 +213,6 @@
 		</div>
 	</div>
 
-
-	<!-- <div class="untree_co-section">
-		<div class="container">
-			<div class="row text-center justify-content-center mb-5">
-				<div class="col-lg-7"><h2 class="section-title text-center">Popular Destination</h2></div>
-			</div>
-
-			<div class="owl-carousel owl-3-slider">
-
-				<div class="item">
-					<a class="media-thumb" href="{% static 'images/hero-slider-1.jpg' %}" data-fancybox="gallery">
-						<div class="media-text">
-							<h3>Pragser Wildsee</h3>
-							<span class="location">Italy</span>
-						</div>
-						<img src="{% static 'images/hero-slider-1.jpg' %}" alt="Image" class="img-fluid">
-					</a> 
-				</div>
-
-				<div class="item">
-					<a class="media-thumb" href="{% static 'images/hero-slider-2.jpg' %}" data-fancybox="gallery">
-						<div class="media-text">
-							<h3>Oia</h3>
-							<span class="location">Greece</span>
-						</div>
-						<img src="{% static 'images/hero-slider-2.jpg' %}" alt="Image" class="img-fluid">
-					</a> 
-				</div>
-
-				<div class="item">
-					<a class="media-thumb" href="{% static 'images/hero-slider-3.jpg' %}" data-fancybox="gallery">
-						<div class="media-text">
-							<h3>Perhentian Islands</h3>
-							<span class="location">Malaysia</span>
-						</div>
-						<img src="{% static 'images/hero-slider-3.jpg' %}" alt="Image" class="img-fluid">
-					</a> 
-				</div>
-
-
-				<div class="item">
-					<a class="media-thumb" href="{% static 'images/hero-slider-4.jpg' %}" data-fancybox="gallery">
-						<div class="media-text">
-							<h3>Rialto Bridge</h3>
-							<span class="location">Italy</span>
-						</div>
-						<img src="{% static 'images/hero-slider-4.jpg' %}" alt="Image" class="img-fluid">
-					</a> 
-				</div>
-
-				<div class="item">
-					<a class="media-thumb" href="{% static 'images/hero-slider-5.jpg' %}" data-fancybox="gallery">
-						<div class="media-text">
-							<h3>San Francisco, United States</h3>
-							<span class="location">United States</span>
-						</div>
-						<img src="{% static 'images/hero-slider-5.jpg' %}" alt="Image" class="img-fluid">
-					</a> 
-				</div>
-
-				<div class="item">
-					<a class="media-thumb" href="{% static 'images/hero-slider-1.jpg' %}" data-fancybox="gallery">
-						<div class="media-text">
-							<h3>Lake Thun</h3>
-							<span class="location">Switzerland</span>
-						</div>
-						<img src="{% static 'images/hero-slider-2.jpg' %}" alt="Image" class="img-fluid">
-					</a> 
-				</div>
-
-			</div>
-
-		</div>
-	</div> -->
 
 
 
@@ -288,33 +290,34 @@
 	<div class="untree_co-section">
 		<div class="container">
 			<div class="row">
-				{% for hall in halls %}
+				{% for entry in halls_with_images %}
 				<div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
 					<div class="media-1">
-						<a href="{% url 'new' %}" class="d-block mb-3">
-							<img src="data:image/jpeg;base64,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"
-								alt="Image of {{ hall.name }}" class="img-fluid">
+
+						<a href="{% url 'hall_detail' entry.hall.id %}" class="d-block mb-3">
+							<img src="{{ entry.image }}" alt="{{ entry.hall.name }} Image" class="img-fluid">
 						</a>
 						<span class="d-flex align-items-center loc mb-2">
 							<span class="icon-room mr-3"></span>
-							<span><a href="https://maps.app.goo.gl/JcD4HZZK7T7SuPKE8">{{ hall.location }}</a></span>
+							<span><a href="https://maps.app.goo.gl/JcD4HZZK7T7SuPKE8"> {{ entry.hall.location }}</a></span>
 						</span>
 						<div class="d-flex align-items-center">
 							<div>
-								<h3><a href="{% url 'new' %}">{{ hall.name }}</a></h3>
-								<div class="price ml-auto">
+								<h3><a href="{% url 'hall_detail' entry.hall.id %}">
+										{{ entry.hall.name }}
+									</a>
+									<div class="price ml-auto">
+										<br>
+										<span>Capacity : {{ entry.hall.capacity }}</span><br><br>
+										
+										<span>
+											<button class="btn btn-info check-availability"
+												data-hall-id="{{ entry.hall.id }}">Check Availability</button>
+										</span>
 
-									<span>Capacity : {{ hall.capacity }}</span><br><br>
-									<span><a href="{% url 'new' %}"><button id="book" class="btn btn-warning">Book
-												Now</button></a></span><br><br>
-									<span>
-										<button class="btn btn-info check-availability"
-											data-hall-id="{{ hall.id }}">Check Availability</button>
-									</span>
 
 
-
-								</div>
+									</div>
 							</div>
 						</div>
 					</div>
@@ -323,6 +326,35 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- <div class="container my-5">
+		<h2 class="text-center mb-4">Hall Images</h2>
+		<div id="hallSlideshow" class="owl-carousel owl-theme">
+			{% if halls_with_images %}
+			{% for entry in halls_with_images %}
+			{% if entry.hall.images %}
+			{% for image in hall.images.all %}
+			<div class="item">
+				<img src="{{ image.image.url }}" alt="{{ hall.name }}" class="img-fluid">
+				<script>
+					console.log("Image loaded for hall: {{ hall.name }} - Image URL: {{ image.image.url }}");
+				</script>
+			</div>
+			{% endfor %}
+			{% else %}
+			<script>
+				console.warn("No images found for hall: {{ hall.name }}");
+			</script>
+			{% endif %}
+
+			{% endfor %}
+			{% else %}
+			<script>
+				console.warn("No halls available.");
+			</script>
+			{% endif %}
+		</div>
+	</div> -->
 
 	<div class="py-5 cta-section">
 		<div class="container">
@@ -456,19 +488,32 @@
 
 		document.querySelectorAll('.check-availability').forEach(button => {
 			button.addEventListener('click', function () {
+				console.log("function");
 				const hallId = this.getAttribute('data-hall-id');
+				console.log(hallId);
 				fetch(`/fetch_bookings/${hallId}/`)
 					.then(response => response.json())
 					.then(bookedEvents => {
+						console.log(bookedEvents);
 						// Store bookings in local storage before redirect
 						localStorage.setItem('bookings', JSON.stringify(bookedEvents));
 
 						// Redirect to calendar.html
-						window.location.href = '/calendar/';
+						
+						window.location.href = `{% url 'calendar' %}?hall_id=${hallId}`;
 					})
 					.catch(error => console.error('Error fetching bookings:', error));
 			});
 		});
+
+		document.querySelectorAll('.book').forEach(button => {
+			button.addEventListener('click', function () {
+			const hallId = this.getAttribute('data-hall-id');
+			console.log(hallId);
+			window.location.href = `/new/${hallId}/`;
+			
+		});
+	});
 
 	</script>
 

@@ -103,10 +103,11 @@
 
     <div class="site-mobile-menu site-navbar-target">
         <div class="site-mobile-menu-header">
-
+            <div class="site-mobile-menu-close">
+                <span class="icofont-close js-menu-toggle"></span>
+            </div>
         </div>
-        <div class="site-mobile-menu-body">
-        </div>
+        <div class="site-mobile-menu-body"></div>
     </div>
 
     <nav class="site-nav">
@@ -116,7 +117,7 @@
 
                 <ul class="js-clone-nav d-none d-lg-inline-block text-left site-menu float-right">
                     <li class="active"><a href="{% url 'index' %}">Home</a></li>
-                    <li><a href="{% url 'calendar' %}">Check Availability</a></li>
+                    <!-- <li><a href="{% url 'calendar' %}">Check Availability</a></li> -->
                     <li><a href="{% url 'new' %}">Book a Hall Now</a></li>
                     <li><a href="{% url 'about' %}">About</a></li>
                 </ul>
@@ -239,6 +240,7 @@
     </div> -->
 
     <script>
+        
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
             console.log(calendarEl);
@@ -283,29 +285,32 @@
                     timeslotModal.style.display = "none";
                 }
             }
-
-            // Fade out the overlay
-            overlay.style.opacity = '0'; // Trigger the fade-out
-
-            // After the transition, hide the overlay completely
-            overlay.addEventListener('transitionend', function () {
-                overlay.style.display = 'none'; // Completely hide after fade-out
-            });
-
             
 
             // Confirm timeslot and check availability
             confirmTimeslot.onclick = function () {
+                console.log("entered");
                 var selectedTimeslot = document.getElementById("timeslot").value;
+                console.log(selectedTimeslot);
                 const isBooked = bookedEvents.some(event =>
                     event.date === selectedDate && event.timeslot === selectedTimeslot || event.date === selectedDate && selectedTimeslot === "full" || event.date === selectedDate && event.timeslot === "full"
                 );
+                
+                console.log(hall_id);
 
-                if (isBooked) {
+                if (isBooked) 
+                {
+
                     alert('This timeslot is already booked. Please choose another timeslot.');
-                } else {
+
+                }
+
+                else 
+                {
+
                     alert('This timeslot is available for booking.');
-                    window.location.href = "{% url 'new' %}";
+                    window.location.href = "{% url 'new' %}?startDate=selectedDate&timeslot=selectedTimeslot&hall_id=hall_id";
+
                 }
 
                 // Close the modal after checking

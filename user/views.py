@@ -14,18 +14,44 @@ import logging
 import json
 from django.core.cache import cache
 from datetime import datetime, timedelta
+from django.core.files.storage import FileSystemStorage
 
 randomotp = 123456
 
 
 def index(request):
-    hallo = Hall.objects.all()
-    return render(request, 'index.html', { 'halls' :  hallo })
+    
+    halls_with_images = []
+    
+    halls = Hall.objects.all()
+    print(f"Number of halls fetched: {halls.count()}")
+    for hall in halls:
+        # Get the first image for the hall, if it exists
+        first_image = HallImage.objects.filter(hall=hall).first()
+        image_url = first_image.image.url if first_image else None
+        halls_with_images.append({
+            'hall': hall,
+            'image': image_url  # Get the URL if an image exists
+        })
+        print(f"Hall: {hall.name}, Image URL: {image_url}")
+        
+    context = {
+    'halls_with_images': halls_with_images,
+    }
+    
+    print(context)
+
+    return render(request, 'index.html', context)
 
 
-def new(request):
-    return render(request, 'new_booking.html')
+def new(request,hall_id=None):
+    print(hall_id)
+    if hall_id:
+        return render(request, 'new_booking.html', {'hall_id':hall_id})
+    else:
+        return render(request, 'new_booking.html')
 
+   
 
 def about(request):
     return render(request, 'about.html')
@@ -36,9 +62,12 @@ def home(request):
 
 
 def calendar_view(request):
-    return render(request, 'calendar.html')
+    hall_id=request.GET.get('hall_id')
+    print(hall_id)
+    return render(request, 'calendar.html', {'hall_id' : hall_id})
 
-def book_hall(request):
+
+def book_hall(request,hall_id=None):
     if request.method == 'POST':
         # Check if OTP is already verified (in the session)
         if not request.session.get('otp_verified', False):
@@ -53,8 +82,12 @@ def book_hall(request):
         event_details = request.POST.get('specify') if event_type == 'others' else None
         event_description = request.POST.get('event_description')
         timeslot = request.POST.get('timeslot')
-        hall_id = 3
+        
+        if(hall_id==None):
+            hall_id=request.POST.get('hall_id)') 
+        print(hall_id)
         selected_hall = Hall.objects.get(id=hall_id)
+        print(selected_hall)
         evening_before = request.POST.get('eveningBefore')
         features = request.POST.getlist('features')
 
@@ -68,6 +101,7 @@ def book_hall(request):
         
         # Create the booking
         booking = Booking.objects.create(
+            
             date=startDate,
             user=user_contact,
             program=event_type if event_type != 'others' else event_details,
@@ -78,6 +112,7 @@ def book_hall(request):
             evening_before=evening_before,
             features=', '.join(features),
             hall=selected_hall,
+            
         )
 
         # Handle "full day" booking case
@@ -115,8 +150,6 @@ def book_hall(request):
         return render(request, 'new_booking.html', {
             'available_halls': available_halls,
         })
-
-
 
 # def book_hall(request):
 #     if request.method == 'POST':
@@ -195,15 +228,11 @@ def book_hall(request):
 #             'available_halls': available_halls,
 #         })
 
-
-
-
 # def fetch_bookings(request):
 #     if request.method == 'GET':
 #         bookings = Booking.objects.all().values('date', 'timeslot')  # Fetch booking date and timeslot
 #         booking_list = list(bookings)
 #         return JsonResponse(booking_list, safe=False)
-
 
 # def fetch_bookings(request):
 #     if request.method == 'GET':
@@ -220,9 +249,11 @@ def fetch_bookings(request, hall_id):
     bookings = Booking.objects.filter(hall_id=hall_id).values('date', 'timeslot')
     return JsonResponse(list(bookings), safe=False)
 
+
 def generate_otp():
     """Generate a 6-digit OTP"""
     return random.randint(100000, 999999)
+
 
 def check_availability(request):
     date = request.GET.get('date')
@@ -231,7 +262,6 @@ def check_availability(request):
     
     is_available = not Booking.objects.filter(hall_id=hall_id, date=date, timeslot=timeslot).exists()
     return JsonResponse({'available': is_available})
-
 
 # def send_otp(request):
 #     if request.method == 'POST':
@@ -269,7 +299,6 @@ def check_availability(request):
 #         return JsonResponse({'success': True, 'message': 'OTP sent successfully'})
 
 #     return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
-
 
 # def verify_otp(request):
 #     if request.method == 'POST':
@@ -329,7 +358,7 @@ def verify_otp(request):
             request.session['otp_verified'] = True
             return JsonResponse({'success': True, 'message': 'OTP verified successfully'})
         else:
-            return JsonResponse({'success': False, 'message': [entered_otp,session_otp] })
+            return JsonResponse({'success': False, 'message': [entered_otp, session_otp] })
     return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
 
 
@@ -345,3 +374,60 @@ def check_session(request):
     email = request.session.get('email', 'No email found')
     return JsonResponse({'otp': otp, 'email': email})
 
+
+# View to display the add features form and handle submission
+def add_features(request):
+    if request.method == "POST":
+        hall_id = request.POST.get('hall_id')
+        feature_id = request.POST.get('feature_id')
+        
+        # Create a new HallFeature entry
+        HallFeature.objects.create(hall_id=hall_id, feature_id=feature_id)
+        
+        return redirect('add_features')  # Redirect to the same page after submission
+
+    # Pass the list of halls and features to the template
+    halls = Hall.objects.all()
+    features = Feature.objects.all()
+    
+    return render(request, 'add_features.html', {'halls': halls, 'features': features})
+
+
+# View to display the add images form and handle submission
+def add_images(request):
+    if request.method == "POST" and request.FILES:
+        hall_id = request.POST.get('hall_id')
+        images = request.FILES.getlist('image')  # Get multiple images
+
+        # Save each image
+        for image in images:
+            fs = FileSystemStorage()
+            filename = fs.save(image.name, image)
+            HallImage.objects.create(hall_id=hall_id, image=filename)
+
+        return redirect('add_images')  # Redirect to the same page after submission
+
+    # Pass the list of halls to the template
+    halls = Hall.objects.all()
+    
+    return render(request, 'add_images.html', {'halls': halls})
+
+
+def hall_detail(request, hall_id):
+    # Fetch the hall by its ID
+    hall = get_object_or_404(Hall, id=hall_id)
+    
+    # Get all images related to the hall
+    images = HallImage.objects.filter(hall=hall)
+    
+    # Get all features related to the hall (via HallFeature model)
+    hall_features = HallFeature.objects.filter(hall=hall)
+    features = [hall_feature.feature for hall_feature in hall_features]  # Extract feature objects
+    
+    context = {
+        'hall': hall,
+        'images': images,
+        'features': features,
+    }
+    
+    return render(request, 'hall_detail.html', context)

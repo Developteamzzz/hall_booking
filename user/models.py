@@ -26,7 +26,7 @@ class Hall(models.Model):
     location = models.CharField(max_length=255, default="perumbavoor") 
     description = models.TextField(blank=True, null=True)
     amenities = models.CharField(max_length=255, blank=True, null=True)
-    #image = models.ForeignKey(ImageGallery, on_delete=models.CASCADE,null=True, blank=True)
+    
 
     
     
@@ -69,6 +69,7 @@ class Booking(models.Model):
     features = models.TextField()
 
 
+
 # class Booking(models.Model):
 #     name=models.CharField(max_length=100)
 #     address=models.CharField(max_length=100)
@@ -83,6 +84,12 @@ class Booking(models.Model):
 #     hallname=models.CharField(max_length=100)
 
 
+class Feature(models.Model):
+    name = models.CharField(max_length=255)
+    addedon=models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
 
 # class Feature(models.Model):
 #     featurename=models.CharField(max_length=100)
@@ -103,7 +110,13 @@ class Booking(models.Model):
 #     isdelete=models.IntegerField(default=0)
 #     addedby=models.IntegerField(default=0)
 
+class HallFeature(models.Model):
+    hall = models.ForeignKey(Hall, on_delete=models.CASCADE)
+    feature = models.ForeignKey(Feature, on_delete=models.CASCADE)
+    addedon=models.DateField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Feature {self.feature.id} for Hall {self.hall.id}"
 
 # class Hallfeature(models.Model):
 #     hall=models.CharField(max_length=100)
@@ -112,7 +125,14 @@ class Booking(models.Model):
 #     addedon=models.DateField(auto_now_add=True)
 #     isdelete=models.IntegerField(default=0)
 
+class HallImage(models.Model):
+    hall = models.ForeignKey(Hall, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='hall_images/')
+    addedon=models.DateField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Image for Hall {self.hall.id}"
+    
 # class Imagegallery(models.Model):
 #     hall=models.CharField(max_length=100)
 #     image=models.CharField(max_length=100)

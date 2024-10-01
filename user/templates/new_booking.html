@@ -199,7 +199,7 @@
 
                 <ul class="js-clone-nav d-none d-lg-inline-block text-left site-menu float-right">
                     <li class="active"><a href="{% url 'index' %}">Home</a></li>
-                    <li><a href="{% url 'calendar' %}">Check Availability</a></li>
+                    <!-- <li><a href="{% url 'calendar' %}">Check Availability</a></li> -->
                     <li><a href="{% url 'new' %}">Book a Hall Now</a></li>
                     <li><a href="{% url 'about' %}">About</a></li>
                 </ul>
@@ -219,7 +219,7 @@
         <div class="container">
             <div class="container mt-5">
                 <h2 class="text-center">Add Event</h2>
-                <form id="regForm" method="post" action="{% url 'book_hall' %}">
+                <form id="regForm" method="post">
                     {% csrf_token %}
                     <div class="form-group" id="step1">
                         <h4>Email Verification: </h4> <br>
@@ -256,6 +256,7 @@
                         <label for="hall">Select Hall:</label>
                         <select name="hall" id="hall" required>
                             {% for hall in available_halls %}
+                            
                             <option value="{{ hall.id }}">{{ hall.name }} ({{ hall.capacity }} people)</option>
                             {% empty %}
                             <option>No available halls for the selected date and timeslot</option>
@@ -283,11 +284,11 @@
                         <label for="event_description">Event Description:</label>
                         <textarea class="form-control" id="event_description" name="event_description" rows="3"
                             required></textarea>
-                        <button class="btn btn-info" type="button" id="openModalBtn"> Read Terms & Conditions</button>
+                        <button class="btn btn-info" type="button" id="openModalBtn"> Read Terms & Conditions</button><br>
                         <label>
-                            <input type="checkbox" id="acceptTnC"> I accept the Terms and
-                            Conditions
+                            I accept the Terms and Conditions
                         </label>
+                        <input type="checkbox" id="acceptTnC">
                     </div>
                     <button type="button" class="btn btn-secondary btn-block" id="prevBtn" style="display: none">
                         Previous
@@ -295,26 +296,9 @@
                     <button type="button" class="btn btn-success btn-block" id="nextBtn" style="display: block">
                         Next
                     </button>
-
                     <button type="submit" class="btn btn-primary btn-block" style="display: none" id="submitBookingBtn">
                         Book Hall
                     </button>
-                    <!-- <div style="overflow:auto;">
-                        <div style="float:right;">
-                            <button type="button" id="prevBtn" class="btn btn-secondary"
-                                onclick="nextPrev(-1)">Previous</button>
-                            <button type="button" id="nextBtn" class="btn btn-success"
-                                onclick="nextPrev(1)">Next</button>
-                        </div>
-                    </div>
-                    <div style="text-align:center;margin-top:40px;">
-                        <span class="step"></span>
-                        <span class="step"></span>
-                        <span class="step"></span>
-                         <span class="step"></span> 
-                    </div> 
-                     <button type="submit" id="sub" class="btn btn-primary">Book</button> 
-                -->
                 </form>
             </div>
         </div>
@@ -931,8 +915,10 @@
             const features = Array.from(document.querySelectorAll('input[name="features"]:checked')).map(el => el.value);
             features.forEach(feature => {
                 formData.append('features', feature); // Append each feature
+                
             });
-            fetch("{% url 'book_hall' %}", {
+            
+            fetch(`/book_hall/${hallId}/`, {
                 method: "POST",
                 headers: {
                     "X-CSRFToken": "{{ csrf_token }}",
