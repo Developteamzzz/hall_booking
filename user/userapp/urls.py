@@ -16,6 +16,7 @@ urlpatterns = [
     path('fetch_bookings/<int:hall_id>/', views.fetch_bookings, name='fetch_bookings'),
     path('test-session/', views.test_session, name='test_session'),
     path('check_availability/', views.check_availability, name='check_availability'),
+    path('hall/<int:hall_id>/', views.hall_detail, name='hall_detail'),
     #path('hall/<int:id>/', views.hall_details, name='hall_details'),
 
 ]

@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'hallmanagement.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME':'hall_booking_system',
+        'NAME':'hallbooking',
         'HOST':'localhost',
         'USER':'root',
         'PASSWORD':'',

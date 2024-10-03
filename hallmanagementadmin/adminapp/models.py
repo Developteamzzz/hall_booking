@@ -65,6 +65,7 @@ class Hall(models.Model):
     addedon=models.DateField(auto_now_add=True)
     isdelete=models.IntegerField(default=0)
     addedby=models.IntegerField(default=0)
+    description = models.CharField(max_length=100)
 
 class Hallfeature(models.Model):
     hall=models.CharField(max_length=100)
@@ -122,3 +123,5 @@ class Booking(models.Model):
     hallname=models.CharField(max_length=100)
     evening_before = models.CharField(max_length=3,default="no",null=True)
     features = models.TextField()
+    
+    

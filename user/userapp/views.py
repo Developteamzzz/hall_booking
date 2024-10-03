@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import *
+from django.db.models.fields.files import ImageField
 from . models import *
 from django.urls import reverse
 from django.http import JsonResponse
@@ -20,9 +21,28 @@ randomotp = 123456
 
 
 def index(request):
-    hallo = Hall.objects.all()
-    return render(request, 'user_index.html', { 'halls' :  hallo })
+    
+    halls_with_images = []
+    
+    halls = Hall.objects.all()
+    print(f"Number of halls fetched: {halls.count()}")
+    for hall in halls:
+        # Get the first image for the hall, if it exists
+        first_image = Imagegallery.objects.filter(hall=hall).first()
+        image_url = first_image.image.url if first_image else None
+        halls_with_images.append({
+            'hall': hall,
+            'image': image_url  # Get the URL if an image exists
+        })
+        print(f"Hall: {hall.hallname}, Image URL: {image_url}")
+        
+    context = {
+    'halls_with_images': halls_with_images,
+    }
+    
+    print(context)
 
+    return render(request, 'user_index.html', context)
 
 def new(request):
     return render(request, 'new_booking.html')
@@ -346,3 +366,23 @@ def check_session(request):
     otp = request.session.get('otp', 'No OTP found')
     email = request.session.get('email', 'No email found')
     return JsonResponse({'otp': otp, 'email': email})
+
+
+def hall_detail(request, hall_id):
+    # Fetch the hall by its ID
+    hall = get_object_or_404(Hall, id=hall_id)
+    
+    # Get all images related to the hall
+    images = Imagegallery.objects.filter(hall=hall)
+    
+    # Get all features related to the hall (via HallFeature model)
+    hall_features = Hallfeature.objects.filter(hall=hall)
+    features = [hall_feature.feature for hall_feature in hall_features]  # Extract feature objects
+    
+    context = {
+        'hall': hall,
+        'images': images,
+        'features': features,
+    }
+    
+    return render(request, 'hall_detail.html', context)
