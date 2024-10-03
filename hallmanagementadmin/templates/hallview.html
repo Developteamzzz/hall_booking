@@ -63,84 +63,6 @@
     </div>
 </div>
 
-<script>
-function checkAvailability(hallId) {
-    console.log(hallId);
-    fetch(`/get_bookings/${hallId}/`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            updateBookings(data);
-            renderCalendar();
-        })
-        .catch(error => {
-            console.error('Error fetching bookings:', error);
-        });
-}
-
-function openModal(dateString) {
-    const modal = document.getElementById("bookingModal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalBody = document.getElementById("modalBody");
-    
-    if (bookings[dateString]) {
-        modalTitle.innerText = `Details for ${dateString}`;
-        modalBody.innerHTML = `
-            <p><strong>Event:</strong> ${bookings[dateString].eventName}</p>
-            <p><strong>Timeslot:</strong> ${bookings[dateString].timeslot}</p>
-            <p><strong>User Name:</strong> ${bookings[dateString].name}</p>
-            <p><strong>Address:</strong> ${bookings[dateString].address}</p>
-            <p><strong>Contact:</strong> ${bookings[dateString].contact}</p>
-            <p><strong>AC:</strong> ${bookings[dateString].ac}</p>
-            <p><strong>Description:</strong> ${bookings[dateString].description}</p>
-            <p><strong>Hall Name:</strong> ${bookings[dateString].hallname}</p>
-        `;
-    } else {
-        modalTitle.innerText = `No bookings for ${dateString}`;
-        modalBody.innerHTML = '<p>No details available for this date.</p>';
-    }
-    
-    modal.classList.add("show");
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const hallId = document.getElementById("hallId").value;
-
-    document.getElementById("checkAvailabilityBtn").addEventListener("click", () => {
-        checkAvailability(hallId);
-    });
-
-    // Calendar navigation
-    document.getElementById("prev").addEventListener("click", () => {
-        currentDate.setMonth(currentDate.getMonth() - 1);
-        renderCalendar();
-    });
-
-    document.getElementById("next").addEventListener("click", () => {
-        currentDate.setMonth(currentDate.getMonth() + 1);
-        renderCalendar();
-    });
-
-    // Close modal event
-    document.getElementById("closeModal").addEventListener("click", () => {
-        const modal = document.getElementById("bookingModal");
-        modal.classList.remove("show");
-    });
-
-    // Close modal when clicking outside of it
-    window.addEventListener("click", (event) => {
-        const modal = document.getElementById("bookingModal");
-        if (event.target === modal) {
-            modal.classList.remove("show");
-        }
-    });
-});
-</script>
-
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
         <!-- Spinner Start -->
@@ -170,12 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 {% comment %} <a href="register"><button type="button" class="btn btn-outline-primary m-3">Admin Register</button></a> {% endcomment %}
                 <div class="navbar-nav w-100">
-                    <a href="index" class="nav-item nav-link active"><i class="bi bi-house-fill"></i></i>Home</a>
+                    <a href="{% url 'index' %}" class="nav-item nav-link active"><i class="bi bi-house-fill"></i></i>Home</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-square"></i>Hall</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="hall" class="dropdown-item">Add Hall</a>
-                            <a href="viewhall" class="dropdown-item">View Hall</a>
+                            <a href="{% url 'hallmanage' %}" class="dropdown-item">Add Hall</a>
+                            <a href="{% url 'viewhall' %}" class="dropdown-item">View Hall</a>
                             {% comment %} <a href="element.html" class="dropdown-item">Other Elements</a> {% endcomment %}
                         </div>
                     </div>
@@ -183,18 +105,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-square-half"></i>Hall Facilities</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="feature" class="dropdown-item">Manage facilities</a>
+                            <a href="{% url 'featuremanage' %}" class="dropdown-item">Manage facilities</a>
                         </div>
                     </div>
 
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-nut-fill"></i>Hall Inoperability</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                            <a href="inoperability" class="dropdown-item">Manage Inoperability</a>
+                            <a href="{% url 'hallinoperabilitymanage' %}" class="dropdown-item">Manage Inoperability</a>
                         </div>
                     </div>
-                    <a href="booked" class="nav-item nav-link"><i class="bi bi-journal-text"></i></i>Booking List</a>
-                    {% comment %} <a href="calendarview" class="nav-item nav-link"><i class="bi bi-calendar-event-fill"></i>Calender View</a>{% endcomment %}
+                    <a href="{% url 'booked' %}" class="nav-item nav-link"><i class="bi bi-journal-text"></i></i>Booking List</a>
+                    {% comment %} <a href="calendarview" class="nav-item nav-link"><i class="bi bi-calendar-event-fill"></i>Calender View</a> {% endcomment %}
                     <a href="#" class="nav-item nav-link"><i class="bi bi-journal-arrow-up"></i>Upcoming Event</a>
                     <a href="#" class="nav-item nav-link"><i class="bi bi-hourglass-split"></i>Booking History</a>
                   
@@ -207,8 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <a href="element.html" class="dropdown-item">Payment Report</a>
                         </div>
                     </div>
-                    <a href="payment" class="nav-item nav-link"><i class="bi bi-credit-card-2-front"></i>Payment</a>  
-                    <a href="logout" class="nav-item nav-link"><i class="bi bi-box-arrow-left"></i>Logout</a>    
+                    <a href="{% url 'paymentmanage' %}" class="nav-item nav-link"><i class="bi bi-credit-card-2-front"></i>Payment</a>  
+                    <a href="{% url 'logout' %}" class="nav-item nav-link"><i class="bi bi-box-arrow-left"></i>Logout</a>    
+                     
                   
                     {% comment %} <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
@@ -366,17 +289,16 @@ document.addEventListener('DOMContentLoaded', () => {
                                     const hallId = this.getAttribute('data-hall-id');
                                     console.log(hallId);
                                     fetch(`/get_bookings/${hallId}/`)
-                                        .then(response => response.json())
-                                        .then(bookedEvents => {
-                                            console.log(bookedEvents);
-                                            // Store bookings in local storage before redirect
-                                            localStorage.setItem('bookings', JSON.stringify(bookedEvents));
-                    
-                                            // Redirect to calendar.html
-                                            window.location.href = '/calendar/';
-                                        })
-                                        .catch(error => console.error('Error fetching bookings:', error));
-                                });
+					.then(response => response.json())
+					.then(bookedEvents => {
+						// Store bookings in local storage before redirect
+						localStorage.setItem('bookings', JSON.stringify(bookedEvents));
+
+						// Redirect to calendar.html
+						window.location.href = '/calendar/';
+					})
+					.catch(error => console.error('Error fetching bookings:', error));
+			});
                             });
                     
                         </script>
