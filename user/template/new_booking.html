@@ -1,0 +1,953 @@
+
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Untree.co">
+    <link rel="shortcut icon" href="favicon.png">
+
+    <meta name="description" content="" />
+    <meta name="keywords" content="bootstrap, bootstrap4" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Serif+Pro:wght@400;700&display=swap"
+        rel="stylesheet">
+
+        <link rel="stylesheet" href="{% static 'user_static/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'user_static/css/owl.carousel.min.css' %}">
+        <link rel="stylesheet" href="{% static 'user_static/css/owl.theme.default.min.css' %}">
+        <link rel="stylesheet" href="{% static 'user_static/css/jquery.fancybox.min.css' %}">
+        <link rel="stylesheet" href="{% static 'user_static/fonts/icomoon/style.css' %}">
+        <link rel="stylesheet" href="{% static 'user_static/fonts/flaticon/font/flaticon.css' %}">
+        <link rel="stylesheet" href="{% static 'user_static/css/daterangepicker.css' %}">
+        <link rel="stylesheet" href="{% static 'user_static/css/aos.css' %}">
+        <link rel="stylesheet" href="{% static 'user_static/css/style.css' %}">
+    
+
+    <title>Booking</title>
+</head>
+<style>
+    #regForm {
+        background-color: #ffffff;
+        margin: 100px auto;
+        padding: 40px;
+        width: 70%;
+        min-width: 300px;
+    }
+
+    /* Style the input fields */
+    input[type="text"],
+    input[type=date],
+    select {
+        padding: 10px;
+        width: 100%;
+        font-size: 17px;
+        font-family: Raleway;
+        border: 1px solid #aaaaaa;
+    }
+
+    /* Mark input boxes that gets an error on validation: */
+    input.invalid {
+        background-color: #ffdddd;
+    }
+
+    /* Hide all steps by default: */
+    .tab {
+        display: none;
+    }
+
+    /* Make circles that indicate the steps of the form: */
+    .step {
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbbbbb;
+        border: none;
+        border-radius: 50%;
+        display: inline-block;
+        opacity: 0.5;
+    }
+
+    /* Mark the active step: */
+    .step.active {
+        opacity: 1;
+    }
+
+    /* Mark the steps that are finished and valid: */
+    .step.finish {
+        background-color: #04AA6D;
+    }
+
+    /* The Modal (background) */
+    .modal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        /* Black background with transparency */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        /* Width of modal */
+        max-width: 600px;
+        /* Set a maximum width */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        /* Add shadow */
+        font-family: 'Arial', sans-serif;
+        /* Set font */
+        color: #333;
+        /* Text color */
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        /* Center the modal vertically */
+    }
+
+    /* Close Button (x) */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Close button at the bottom */
+    .close-btn {
+        display: block;
+        margin: 20px auto 0 auto;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+
+    .close-btn:hover {
+        background-color: #45a049;
+    }
+
+    /* Style the text inside modal */
+    .terms-text {
+        text-align: left;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    /* Disable Submit Button Initially */
+    #submitBtn {
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
+    }
+
+    /* Enable Submit Button When Checkbox is Checked */
+    input[type="checkbox"]:checked~#submitBtn {
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+    }
+</style>
+
+<body>
+
+
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close">
+                <span class="icofont-close js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div>
+
+    <nav class="site-nav">
+        <div class="container">
+            <div class="site-navigation">
+                <a href="{% url 'index' %}" class="logo m-0">Rotary Club<span class="text-primary">.</span></a>
+
+                <ul class="js-clone-nav d-none d-lg-inline-block text-left site-menu float-right">
+                    <li class="active"><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'calendar' %}">Check Availability</a></li>
+                    <li><a href="{% url 'new' %}">Book a Hall Now</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                </ul>
+
+                <a href="#"
+                    class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
+                    data-toggle="collapse" data-target="#main-navbar">
+                    <span></span>
+                </a>
+
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="hero">
+        <div class="container">
+            <div class="container mt-5">
+                <h2 class="text-center">Add Event</h2>
+                <form id="regForm" method="post" action="{% url 'book_hall' %}">
+                    {% csrf_token %}
+                    <div class="form-group" id="step1">
+                        <h4>Email Verification: </h4> <br>
+                        <label for="email">Email:</label>
+                        <input type="text" class="form-control" id="email" name="email" required
+                            placeholder="Enter your email id"> <br>
+                        <button type="button" id="sendOTPBtn" class="btn btn-warning">Get OTP</button>
+                        <br><br>
+
+                        <label for="otp">OTP:</label>
+                        <input type="text" class="form-control" id="otp" name="otp"
+                            placeholder="Enter the OTP received on your email id" required><br>
+                        <button type="button" id="verifyOTPBtn" class="btn btn-warning">Verify OTP</button>
+                        <!-- <p id="message"></p> -->
+                        <br />
+                    </div>
+                    <div class="form-group" id="step2" style="display: none">
+                        <h4>Contact Details: </h4> <br>
+                        <label for=" organizer">Organizer Name :</label>
+                        <input type="text" class="form-control" id="user_contact_name" name="name"
+                            placeholder="Enter event organizer" required>
+                        <label for="email">Email :</label>
+                        <input type="text" class="form-control" id="emailStep2" name="emailStep2" required disabled>
+                        <label for="contact">Contact Number:</label>
+                        <input type="text" class="form-control" id="user_contact_phone" name="number"
+                            placeholder="Enter contact number" required>
+
+                        <label for="user_contact_address">Address</label>
+                        <textarea class="form-control" id="event_address" name="address" required rows="3"></textarea>
+                        <br />
+                    </div>
+                    <div class="form-group" id="step3" style="display: none">
+                        <h4>Program Details : </h4> <br>
+                        <label for="hall">Select Hall:</label>
+                        <select name="hall" id="hall" required>
+                            {% for hall in available_halls %}
+                            <option value="{{ hall.id }}">{{ hall.name }} ({{ hall.capacity }} people)</option>
+                            {% empty %}
+                            <option>No available halls for the selected date and timeslot</option>
+                            {% endfor %}
+                        </select>
+                        <label for="event_type">Event Type</label>
+                        <select class="form-control" id="event_type" name="event_type" required>
+                            <option value="marriage">Marriage</option>
+                            <option value="meeting">Meeting</option>
+                            <option value="baptism">Baptism</option>
+                            <option value="others">Others</option>
+                        </select>
+                        <div id="other_event_type" style="display: none">
+                            <label for="specify">Specify Event Type:</label>
+                            <input type="text" id="specify" name="specify" required />
+                        </div>
+                        <label for="startDate">Date:</label>
+                        <input type="date" class="form-control" id="startDate" name="start_date">
+                        <label for="timeslot">Time slot:</label>
+                        <select id="timeslot" name="timeslot" onchange="checkTimeslot()">
+                            <option value="morning">Morning</option>
+                            <option value="evening">Evening</option>
+                            <option value="full">Full Day</option>
+                        </select>
+                        <label for="event_description">Event Description:</label>
+                        <textarea class="form-control" id="event_description" name="event_description" rows="3"
+                            required></textarea>
+                        <button class="btn btn-info" type="button" id="openModalBtn"> Read Terms & Conditions</button>
+                        <label>
+                            <input type="checkbox" id="acceptTnC"> I accept the Terms and
+                            Conditions
+                        </label>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-block" id="prevBtn" style="display: none">
+                        Previous
+                    </button>
+                    <button type="button" class="btn btn-success btn-block" id="nextBtn" style="display: block">
+                        Next
+                    </button>
+
+                    <button type="submit" class="btn btn-primary btn-block" style="display: none" id="submitBookingBtn">
+                        Book Hall
+                    </button>
+                    <!-- <div style="overflow:auto;">
+                        <div style="float:right;">
+                            <button type="button" id="prevBtn" class="btn btn-secondary"
+                                onclick="nextPrev(-1)">Previous</button>
+                            <button type="button" id="nextBtn" class="btn btn-success"
+                                onclick="nextPrev(1)">Next</button>
+                        </div>
+                    </div>
+                    <div style="text-align:center;margin-top:40px;">
+                        <span class="step"></span>
+                        <span class="step"></span>
+                        <span class="step"></span>
+                         <span class="step"></span> 
+                    </div> 
+                     <button type="submit" id="sub" class="btn btn-primary">Book</button> 
+                -->
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="site-footer">
+        <div class="inner first">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="widget">
+                            <h3 class="heading">About Tour</h3>
+                            <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia,
+                                there live the blind texts.</p>
+                        </div>
+                        <div class="widget">
+                            <ul class="list-unstyled social">
+                                <li><a href="#"><span class="icon-twitter"></span></a></li>
+                                <li><a href="#"><span class="icon-instagram"></span></a></li>
+                                <li><a href="#"><span class="icon-facebook"></span></a></li>
+                                <li><a href="#"><span class="icon-linkedin"></span></a></li>
+                                <li><a href="#"><span class="icon-dribbble"></span></a></li>
+                                <li><a href="#"><span class="icon-pinterest"></span></a></li>
+                                <li><a href="#"><span class="icon-apple"></span></a></li>
+                                <li><a href="#"><span class="icon-google"></span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-2 pl-lg-5">
+                        <div class="widget">
+                            <h3 class="heading">Pages</h3>
+                            <ul class="links list-unstyled">
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-2">
+                        <div class="widget">
+                            <h3 class="heading">Resources</h3>
+                            <ul class="links list-unstyled">
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="widget">
+                            <h3 class="heading">Contact</h3>
+                            <ul class="list-unstyled quick-info links">
+                                <li class="email"><a href="#">mail@example.com</a></li>
+                                <li class="phone"><a href="#">+1 222 212 3819</a></li>
+                                <li class="address"><a href="#">43 Raymouth Rd. Baltemoer, London 3910</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="inner dark">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-md-8 mb-3 mb-md-0 mx-auto">
+                        <p>Copyright &copy;
+                            <script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash;
+                            Designed with love by <a href="https://untree.co" class="link-highlight">Untree.co</a>
+                            <!-- License information: https://untree.co/license/ -->Distributed By <a
+                                href="https://themewagon.com" target="_blank">ThemeWagon</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div id="overlayer">
+        <div class="loader">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div> -->
+
+
+    <div id="termsModal" class="modal" style="display:none;">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="terms-text">
+                <h3>Terms and Conditions</h3>
+                <p>
+                    By using our hall booking system, you agree to the following terms and conditions.
+                    Please make sure you read them carefully before proceeding with your booking.
+                </p>
+                <p>
+                    1. The hall must be booked at least 30 days in advance.<br>
+                    2. Cancellations must be made 7 days prior to the booking date to receive a full refund.<br>
+                    3. Any damage to the property during the event will be the responsibility of the booking party.<br>
+                    4. The hall can only be used for events mentioned at the time of booking.<br>
+                    5. All bookings are subject to availability and approval.
+                </p>
+                <p>We reserve the right to modify these terms at any time without notice.</p>
+            </div>
+
+            <!-- Close button at the bottom -->
+            <button class="close-btn" id="closeTermsModalBtn">Close</button>
+        </div>
+    </div>
+
+
+    <div id="furtherQuestionsModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Further Questions</h3>
+            <form id="furtherQuestionsForm"> <!-- Start of the form -->
+                <p>1. Do you need the evening the day before also?</p>
+                <label>
+                    <input class="form-control" type="radio" name="eveningBefore" value="yes"> Yes
+                </label><br>
+                <label>
+                    <input type="radio" class="form-control" name="eveningBefore" value="no"> No
+                </label><br>
+                <p>2. Do you need any other features?</p>
+                <label for="kitchen">Kitchen</label>
+                <input class="form-control" type="checkbox" id="kitchen" name="features" value="kitchen">
+                <label for="decoration">Decoration</label>
+                <input class="form-control" type="checkbox" id="decoration" name="features" value="decoration">
+                <button type="button" class="close-btn" id="closeFurtherQuestions">Close</button>
+                <button class="submit-btn" type="submit">Submit</button> <!-- Submit button -->
+            </form> <!-- End of the form -->
+        </div>
+    </div>
+
+
+
+
+
+    <script src="{% static 'user_static/js/jquery-3.4.1.min.js' %}"></script>
+	<script src="{% static 'user_static/js/popper.min.js' %}"></script>
+	<script src="{% static 'user_static/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'user_static/js/owl.carousel.min.js' %}"></script>
+	<script src="{% static 'user_static/s/jquery.animateNumber.min.js' %}"></script>
+	<script src="{% static 'user_static/js/jquery.waypoints.min.js' %}"></script>
+	<script src="{% static 'user_static/js/jquery.fancybox.min.js' %}"></script>
+	<script src="{% static 'user_static/js/aos.js' %}"></script>
+	<script src="{% static 'user_static/js/moment.min.js' %}"></script>
+	<script src="{% static 'user_static/js/daterangepicker.js' %}"></script>
+	<script src="{% static 'user_static/js/typed.js' %}"></script>
+
+
+
+    <!-- <script>
+        document.getElementById("nextBtn").addEventListener("click", function () {
+            if (currentStep === 1) {
+                // Check if the email field is filled
+                if (document.getElementById("email").value.trim() === "") {
+                    alert("Please enter your email.");
+                    return; // Prevent moving to the next step
+                }
+                // Additional checks can be added here
+                document.getElementById("step1").style.display = "none";
+                document.getElementById("step2").style.display = "block";
+                document.getElementById("prevBtn").style.display = "none";
+                document.getElementById("nextBtn").style.display = "block";
+            } else if (currentStep === 2) {
+                // Check if required fields in step 2 are filled
+                if (document.getElementById("user_contact_name").value.trim() === "" ||
+                    document.getElementById("user_contact_phone").value.trim() === "" ||
+                    document.getElementById("event_address").value.trim() === "") {
+                    alert("Please fill all contact details.");
+                    return; // Prevent moving to the next step
+                }
+                document.getElementById("step2").style.display = "none";
+                document.getElementById("step3").style.display = "block";
+                document.getElementById("prevBtn").style.display = "block";
+                document.getElementById("nextBtn").style.display = "none";
+                document.getElementById("submitBookingBtn").style.display = "block";
+            }
+            currentStep++;
+        });
+
+    </script> -->
+
+    <script>
+        let currentStep = 1;
+
+        document.getElementById("nextBtn").addEventListener("click", function () {
+            if (currentStep === 1) {
+                // Move to Step 2
+                if (document.getElementById("email").value.trim() === "") {
+                    alert("Please enter your email.");
+                    return;
+                }
+                document.getElementById("step1").style.display = "none";
+                document.getElementById("step2").style.display = "block";
+                document.getElementById("prevBtn").style.display = "none";
+                document.getElementById("nextBtn").style.display = "block";
+            }
+            else if (currentStep === 2) {
+                // Move to Step 3
+                if (document.getElementById("user_contact_name").value.trim() === "" ||
+                    document.getElementById("user_contact_phone").value.trim() === "" ||
+                    document.getElementById("event_address").value.trim() === "") {
+                    alert("Please fill all contact details.");
+                    return; // Prevent moving to the next step
+                }
+                document.getElementById("step2").style.display = "none";
+                document.getElementById("step3").style.display = "block";
+                document.getElementById("prevBtn").style.display = "block";
+                document.getElementById("nextBtn").style.display = "none";
+                document.getElementById("submitBookingBtn").style.display = "block";
+            }
+            currentStep++;
+        });
+
+        document.getElementById("prevBtn").addEventListener("click", function () {
+            if (currentStep === 2) {
+                // Move back to Step 1
+                document.getElementById("step2").style.display = "none";
+                document.getElementById("step1").style.display = "block";
+                document.getElementById("prevBtn").style.display = "none";
+                document.getElementById("nextBtn").style.display = "block";
+                document.getElementById("submitBookingBtn").style.display = "none";
+            } else if (currentStep === 3) {
+                // Move back to Step 2
+                document.getElementById("step3").style.display = "none";
+                document.getElementById("step2").style.display = "block";
+                document.getElementById("prevBtn").style.display = "block";
+                document.getElementById("nextBtn").style.display = "block";
+                document.getElementById("submitBookingBtn").style.display = "none";
+            }
+            currentStep--;
+        });
+
+        document
+            .getElementById("event_type")
+            .addEventListener("change", function () {
+                if (this.value === "others") {
+                    document.getElementById("other_event_type").style.display = "block";
+                } else {
+                    document.getElementById("other_event_type").style.display = "none";
+                }
+            });
+    </script>
+    <!-- next button logic -->
+
+
+    <script>
+        // Get modal element
+        var furtherQuestionsModal = document.getElementById("furtherQuestionsModal");
+
+        // Function to check the selected timeslot
+        function checkTimeslot() {
+            var timeslot = document.getElementById("timeslot").value;
+            if (timeslot === "full") {
+                furtherQuestionsModal.style.display = "block"; // Show modal if "full" is selected
+            }
+        }
+
+        // Get the close button for Further Questions Modal
+        var closeFurtherQuestionsButton = document.getElementById("closeFurtherQuestions");
+
+        // When the user clicks the Close button, close the modal
+        closeFurtherQuestionsButton.onclick = function () {
+            furtherQuestionsModal.style.display = "none"; // Hide the modal when close button is clicked
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == furtherQuestionsModal) {
+                furtherQuestionsModal.style.display = "none"; // Hide the modal if clicked outside
+            }
+        }
+        document.getElementById('furtherQuestionsForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            const eveningBefore = document.querySelector('input[name="eveningBefore"]:checked');
+            const features = Array.from(document.querySelectorAll('input[name="features"]:checked')).map(el => el.value);
+
+            const eveningBeforeValue = eveningBefore ? eveningBefore.value : null;
+
+            // Store these values (you can use AJAX to send this data to your server or save it in a variable)
+            console.log('Evening Before:', eveningBeforeValue);
+            console.log('Features:', features);
+
+            // Optionally close the modal here
+            document.getElementById('furtherQuestionsModal').style.display = 'none';
+        });
+
+
+        // document.getElementById('closeFurtherQuestions').addEventListener('click', function () {
+        //     document.getElementById('furtherQuestionsModal').style.display = 'none';
+        // });
+
+    </script>
+
+
+
+    <script>
+        // Get modal elements
+        var termsModal = document.getElementById("termsModal");
+
+        // Open Terms and Conditions modal
+        document.getElementById("openModalBtn").onclick = function () {
+            termsModal.style.display = "block";
+        }
+
+        // Get the close button for Terms Modal
+        var closeTermsModalButton = document.getElementById("closeTermsModalBtn");
+
+        // When the user clicks the Close button, close the modal
+        closeTermsModalButton.onclick = function () {
+            termsModal.style.display = "none"; // Hide the modal when close button is clicked
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == termsModal) {
+                termsModal.style.display = "none"; // Hide the modal if clicked outside
+            }
+        }
+    </script>
+
+
+
+    <!-- <script>
+        function questions() {
+
+            var select = document.getElementById("timeslot");
+            var modalContent = `
+            
+                            <div class="modal-header">
+                            <h5 class="modal-title">Further Questions</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                              {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="extra">Do you want the evening, the day before, too ?</label>
+                                    <select id="extra" class="form-control" name="extra">
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Do you want any other features ?</label><br>
+                                    <label for="kitchen">Kitchen</label>
+                                    <input type="checkbox" id="kitchen" name="kitchen" value="kitchen">
+                                    <label for="decoration">Decoration</label>
+                                    <input type="checkbox" id="decoration" name="decoration" value="decoration">
+                                </div>                           
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                         
+                        </div>`;
+            // $('#extraquesions').modal('hide');
+            // $('#extraquesions .modal-content').html(modalContent);
+            // $('#extraquesions').modal('show');
+            if (select.value === "full") {
+
+                $('#extraquesions .modal-content').html(modalContent);
+                $('#extraquesions').modal('show');
+
+            }
+
+            else {
+
+                $('#extraquesions').modal('hide');
+
+            }
+
+
+            //jQuery click handler for close button
+            $(document).on('click', '[data-dismiss="modal"]', function () {
+                $('#extraquesions').modal('hide');
+            });
+        }
+
+
+    </script>
+    <main id="main" class="main">
+
+        <div class="modal fade" id="extraquesions" tabindex="-1" role="dialog" aria-labelledby="extraquesionsLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                     Content will be loaded dynamically 
+                    <div class="modal-body">
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+
+        function checkOtherOption() {
+
+            var select = document.getElementById("program");
+            var otherField = document.getElementById("otherField");
+
+            if (select.value === "others") {
+
+                otherField.style.display = "block"; // Show the field if "Others" is selected
+            } else {
+
+                otherField.style.display = "none";  // Hide the field otherwise
+            }
+
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#getotp').click(function () {
+                var email = $('#email').val();
+                $.ajax({
+                    url: "{% url 'generate_otp' %}",  // URL for the view handling OTP verification
+                    type: 'POST',
+                    data: {
+                        'email': email,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'  // Pass CSRF token
+                    },
+                    success: function (response) {
+                        $('#message').text(response.message);
+                    }
+                });
+            });
+
+            $('#verifyotp').click(function () {
+
+                const otp = $('#otp').val();
+                $.ajax({
+                    url: "{% url 'verify_otp' %}",  // URL for the view handling OTP verification
+                    type: 'POST',
+                    data: {
+                        'otp': otp,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'  // Pass CSRF token
+                    },
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            alert('OTP verified successfully!');
+
+                        } else {
+                            $('#error').text(response.message);  // Display error message
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error:', error);
+                    }
+                });
+            });
+
+        });
+    </script>-->
+    <!-- <script>
+
+        var currentTab = 0; // Current tab is set to be the first tab (0)
+        showTab(currentTab); // Display the current tab
+        function showTab(n) {
+
+            // This function will display the specified tab of the form ...
+            var x = document.getElementsByClassName("tab");
+            x[n].style.display = "block";
+            // ... and fix the Previous/Next buttons:
+            if (n == 0) {
+                document.getElementById("prevBtn").style.display = "none";
+            } else {
+                document.getElementById("prevBtn").style.display = "inline";
+            }
+            if (n == (x.length - 1)) {
+                document.getElementById("nextBtn").innerHTML = "Submit";
+            } else {
+                document.getElementById("nextBtn").innerHTML = "Next";
+            }
+            // ... and run a function that displays the correct step indicator:
+            fixStepIndicator(n)
+        }
+
+        function nextPrev(n) {
+
+            // This function will figure out which tab to display
+            var x = document.getElementsByClassName("tab");
+            // Exit the function if any field in the current tab is invalid:
+            //if (n == 1 && !validateForm()) return false;
+            // Hide the current tab:
+            x[currentTab].style.display = "none";
+            // Increase or decrease the current tab by 1:
+            currentTab = currentTab + n;
+
+            // if you have reached the end of the form... :
+
+            if (currentTab >= x.length) {
+                //...the form gets submitted:
+                if (confirm("Are you sure you want to proceed?")) {
+                    document.getElementById("regForm").submit();
+                    return false;
+                } else {
+                    alert("Action canceled.");
+                }
+
+            }
+            // Otherwise, display the correct tab:
+            showTab(currentTab);
+        }
+
+        function validateForm() {
+            // This function deals with validation of the form fields
+            var x, y, i, valid = true;
+            x = document.getElementsByClassName("tab");
+            y = x[currentTab].getElementsByTagName("input");
+            // A loop that checks every input field in the current tab:
+            for (i = 0; i < y.length; i++) {
+                // If a field is empty...
+                if (y[i].value == "") {
+                    // add an "invalid" class to the field:
+                    y[i].className += " invalid";
+                    // and set the current valid status to false:
+                    valid = false;
+                }
+            }
+            // If the valid status is true, mark the step as finished and valid:
+            if (valid) {
+                document.getElementsByClassName("step")[currentTab].className += " finish";
+            }
+            return valid; // return the valid status
+        }
+
+        function fixStepIndicator(n) {
+            // This function removes the "active" class of all steps...
+            var i, x = document.getElementsByClassName("step");
+            for (i = 0; i < x.length; i++) {
+                x[i].className = x[i].className.replace(" active", "");
+            }
+            //... and adds the "active" class to the current step:
+            x[n].className += " active";
+        }
+    </script> -->
+
+
+
+
+    <script>
+        document.getElementById("sendOTPBtn").addEventListener("click", function () {
+            var email = document.getElementById("email").value;
+            if (email == "") { alert("enter a valid email id") }
+            else {
+                fetch("{% url 'send_otp' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                    body: JSON.stringify({ email: email }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            document.getElementById("otp").disabled = false;
+                            document.getElementById("verifyOTPBtn").disabled = false;
+                            alert("OTP has been sent to your email.");
+                        } else {
+                            alert("Error sending OTP. Please try again.");
+                        }
+                    });
+            }
+        });
+
+        document
+            .getElementById("verifyOTPBtn").addEventListener("click", function () {
+                var otp = document.getElementById("otp").value;
+                fetch("{% url 'verify_otp' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                    body: JSON.stringify({ otp: otp }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        if (data.success) {
+                            document.getElementById("step1").style.display = "none";
+                            document.getElementById("step2").style.display = "block";
+                            alert("OTP verified successfully.");
+                            document.getElementById("emailStep2").value =
+                                document.getElementById("email").value;
+                        } else {
+                            alert("Invalid OTP. Please try again.");
+                        }
+                    });
+            });
+        document.getElementById("submitBookingBtn").addEventListener("click", function (event) {
+            event.preventDefault();
+            var formData = new FormData(document.getElementById("regForm"));
+            const eveningBefore = document.querySelector('input[name="eveningBefore"]:checked');
+            if (eveningBefore) {
+                formData.append('eveningBefore', eveningBefore.value);
+            }
+            const features = Array.from(document.querySelectorAll('input[name="features"]:checked')).map(el => el.value);
+            features.forEach(feature => {
+                formData.append('features', feature); // Append each feature
+            });
+            fetch("{% url 'book_hall' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Hall booked successfully.");
+                        window.location.href = "{% url 'index' %}";
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>
