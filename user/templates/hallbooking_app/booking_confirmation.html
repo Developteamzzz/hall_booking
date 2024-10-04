@@ -1,0 +1,55 @@
+<!-- hallbooking_app/templates/hallbooking_app/booking_confirmation.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Booking Confirmation</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'home' %}">Hall Booking</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="{% url 'check_availability' %}">Check Availability</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'book_hall' %}">Book Hall</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'add_hall' %}">Add Hall</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'list_halls' %}">Available Halls</a></li>
+            </ul>
+        </div>
+    </nav>
+
+<div class="container mt-4">
+    <h2 class="text-center">Booking Confirmation</h2>
+    <p><strong>Thank you for your booking!</strong></p>
+    <p>Your booking details are as follows:</p>
+    <ul>
+        <li><strong>Name:</strong> {{ user.name }}</li>
+        <li><strong>Phone:</strong> {{ user.number }}</li>
+        <li><strong>Email:</strong> {{ user.email }}</li>
+        <li><strong>Hall:</strong> {{ booking.hall.name }}</li>
+        <li><strong>Start Time:</strong> {{ booking.start_time }}</li>
+        <li><strong>End Time:</strong> {{ booking.end_time }}</li>
+        <li><strong>Event Type:</strong> {{ booking.event_type }}</li>
+        <li><strong>Event Description:</strong> {{ booking.event_description }}</li>
+    </ul>
+</div>
+
+</body>
+</html>

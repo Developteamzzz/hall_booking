@@ -1,0 +1,99 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Events</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+</head>
+
+<body>
+	<div class="container mt-5">
+		<h2 class="text-center">Events</h2>
+		<br>
+		<div class="mb-3">
+			<a href="{% url 'create_event' %}" class="btn btn-primary">Add New Event</a>
+			<!-- Button to add new event -->
+			<!-- Button to go back to categories -->
+		</div>
+		<table id="eventTable" class="table">
+			<thead>
+				<tr>
+					<th>Program</th>
+					<th>Date</th>
+					<th>Time</th>
+					<th>Actions</th> <!-- Column for actions -->
+				</tr>
+			</thead>
+			<tbody>
+				{% for event in events %}
+				<tr>
+					<td>{{ event.name }}</td>
+					<td>{{ event.start_date }}</td>
+					<td>{{ event.start_time }}</td>
+					<td>
+						<a href="{% url 'update_event' event.id %}" class="btn btn-primary btn-sm">Update</a>
+						<!-- Button to update event -->
+						<form method="post" action="{% url 'delete_event' event.id %}" style="display: inline;">
+							{% csrf_token %}
+							<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+							<!-- Button to delete event -->
+						</form>
+						<button type="button" class="btn btn-info btn-sm" data-toggle="modal"
+							data-target="#eventModal_{{ event.id }}">Details</button> <!-- Button to open modal -->
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Modal for event details -->
+	{% for event in events %}
+	<div class="modal fade" id="eventModal_{{ event.id }}" tabindex="-1" role="dialog"
+		aria-labelledby="eventModalLabel_{{ event.id }}" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="eventModalLabel_{{ event.id }}">{{ event.name }}</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+							aria-hidden="true">×</span></button>
+				</div>
+				<div class="modal-body">
+					<p>
+						<strong>Name:</strong> {{ event.name }}
+					</p>
+					<p>
+						<strong>Date:</strong> {{ event.start_date }}
+					</p>
+					<p>
+						<strong>Time:</strong> {{ event.start_time }}
+					</p>
+					<p>
+						<strong>Description:</strong> {{ event.description }}
+					</p>
+					<p>
+						<strong>Organizer:</strong> {{ event.organizer }}
+					</p>
+					<p>
+						<strong>Contact:</strong> {{ event.contact }}
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+
+	<!-- Bootstrap JS (Optional - for certain Bootstrap features like modals) -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

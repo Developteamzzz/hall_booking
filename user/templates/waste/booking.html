@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Add Event</title>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	
+</head>
+
+<body>
+	<div class="container mt-5">
+		<h2 class="text-center">Add Event</h2>
+		<br>
+		<form method="post" >
+			{% csrf_token %}
+			<div class="form-group">
+				<label for="eventName"> Hall booked for :</label>
+				<input type="text" class="form-control" id="eventName" name="name" placeholder="Enter event name"
+					required>
+			</div>
+			<div class="form-group">
+				<label for="startDate">Date:</label>
+				<input type="date" class="form-control" id="startDate" name="start_date" required>
+			</div>
+			<div class="form-group">
+				<label for="startDate">Time slot:</label>
+				<input type="text" class="form-control" id="startTime" name="start_time"
+					required>
+			</div>
+			<div class="form-group">
+				<label for="description">Description:</label>
+				<textarea class="form-control" id="description" name="description" rows="3"></textarea>
+			</div>
+			Contact Details:
+			<div class="form-group">
+				<label for="organizer">Organizer:</label>
+				<input type="text" class="form-control" id="organizer" name="organizer"
+					placeholder="Enter event organizer">
+			</div>
+			<div class="form-group">
+				<label for="contact">Contact Number:</label>
+				<input type="text" class="form-control" id="contact" name="contact"
+					placeholder="Enter contact">
+			</div>
+			<button type="submit" id="sub" class="btn btn-primary">Book</button>
+			
+		</form>
+	</div>
+
+	<!-- Bootstrap JS (Optional - for certain Bootstrap features like dropdowns, modals, etc.) -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
